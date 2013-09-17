@@ -2,15 +2,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:padding="@dimen/margin"
     tools:context=".NewContact" >
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/personNameViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+
+        <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/personNameLabel" />
+
+        <EditText
+            android:id="@+id/personName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/personNameHint"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/personNameViews"
+        android:layout_below="@+id/personNameViews"
+        android:layout_marginTop="@dimen/half_margin"
+        android:text="@string/primaryPhoneNumberLabel" />
+
+    <EditText
+        android:id="@+id/primaryPhoneField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:ems="10"
+        android:hint="@string/primaryPhoneNumberHint"
+        android:inputType="phone" />
+
+    <TextView
+        android:id="@+id/primaryEmailLabel"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/primaryPhoneField"
+        android:layout_below="@+id/primaryPhoneField"
+        android:layout_marginTop="@dimen/half_margin"
+        android:text="@string/primaryEmailLabel" />
+
+    <EditText
+        android:id="@+id/primaryEmailField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/primaryEmailLabel"
+        android:layout_alignRight="@id/primaryEmailLabel"
+        android:layout_below="@id/primaryEmailLabel"
+        android:ems="10"
+        android:hint="@string/primaryEmailHint"
+        android:inputType="textEmailAddress" >
+
+        <requestFocus />
+    </EditText>
 
 </RelativeLayout>

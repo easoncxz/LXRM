@@ -7,5 +7,11 @@
     <string name="action_add_contact">Add contact</string>
     <string name="action_sort_contact_list">Sort list</string>
     <string name="title_activity_new_contact">New Contact</string>
-
+    <string name="personNameLabel">Name</string>
+    <string name="personNameHint">Enter name here …</string>
+    <string name="primaryPhoneNumberLabel">Primary phone</string>
+    <string name="primaryPhoneNumberHint">Enter number here …</string>
+    <string name="primaryEmailLabel">Primary email</string>
+    <string name="primaryEmailHint">Enter address here …</string>
+    <string name="save">Save</string>
 </resources>

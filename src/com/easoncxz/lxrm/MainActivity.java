@@ -5,14 +5,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+
+	private ArrayAdapter<String> aa;
+
+	/**
+	 * Private method that adapts to different ways of filling in the ListView
+	 * on this screen.
+	 */
+	private void populateListView() {
+		ListView l = (ListView) findViewById(R.id.list_of_contacts);
+		String[] sa = new String[] { "1", "2", "3" };
+		aa = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_2, sa);
+		l.setAdapter(aa);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		populateListView();
+
 	}
 
 	@Override
