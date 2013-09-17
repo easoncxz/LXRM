@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 		ListView l = (ListView) findViewById(R.id.list_of_contacts);
 		String[] sa = new String[] { "1", "2", "3" };
 		aa = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_2, sa);
+				android.R.layout.simple_list_item_1, sa);
 		l.setAdapter(aa);
 	}
 
