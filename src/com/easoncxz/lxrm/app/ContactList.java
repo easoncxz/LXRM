@@ -30,7 +30,6 @@ public class ContactList extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// return 0;
 		return list.size();
 	}
 
@@ -40,34 +39,18 @@ public class ContactList extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		// return null;
 		return list.get(position);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public long getItemId(int position) {
-		// return 0;
 		return list.get(position).getId();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// return null;
-
-		// TextView tv = new TextView(parent.getContext());
-
-		// LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-		// (int) LayoutParams.WRAP_CONTENT,
-		// (int) LayoutParams.WRAP_CONTENT);
-		// tv.setLayoutParams(params);
-		// tv.setText(list.get(position).getFormattedName());
-
-		// tv.setPadding(16, 16, 16, 16);
-		// tv.setText(((Contact) this.getItem(position)).getFormattedName());
-		// return tv;
-
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(android.R.layout.simple_list_item_2, null);
