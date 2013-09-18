@@ -5,33 +5,68 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.easoncxz.lxrm.app.ContactList;
+import com.easoncxz.lxrm.app.DataStore;
+import com.easoncxz.lxrm.app.DataStoreFactory;
+
 public class MainActivity extends Activity {
 
-	private ArrayAdapter<String> aa;
+	private ListView l = null;
 
 	/**
 	 * Private method that adapts to different ways of filling in the ListView
-	 * on this screen.
+	 * on this screen. Expect this method to interact with other classes.
 	 */
 	private void populateListView() {
-		ListView l = (ListView) findViewById(R.id.list_of_contacts);
-		String[] sa = new String[] { "1", "2", "3" };
-		aa = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, sa);
-		l.setAdapter(aa);
+		// first register adapter for the ListView:
+
+		// ArrayAdapter<String> aa = new ArrayAdapter<String>(MainActivity.this,
+		// android.R.layout.simple_list_item_1, new String[] { "1", "2",
+		// "3" });
+		// l.setAdapter(aa);
+
+		DataStore ds = DataStoreFactory.getDataStore();
+		ContactList cl = ds.getContactsList(this);
+		l.setAdapter(cl);
+
+		// then registers event handlers for the ListView:
+		OnItemClickListener listener = new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Toast.makeText(
+						MainActivity.this,
+						"id: " + Long.toString(id) + "\npos: "
+								+ Integer.toString(position),
+						Toast.LENGTH_SHORT).show();
+				// TODO
+			}
+		};
+		l.setOnItemClickListener(listener);
+	}
+
+	private void viewOneContact(AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent i = new Intent();
+		i.setClass(MainActivity.this, ViewOneContact.class);
+		Bundle extras = new Bundle();
+		extras.putLong("id", id);
+		i.putExtras(extras);
+		startActivity(i, extras);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		l = (ListView) findViewById(R.id.list_of_contacts);
 		populateListView();
-
 	}
 
 	@Override
