@@ -3,13 +3,12 @@ package com.easoncxz.lxrm.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.easoncxz.lxrm.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 /**
  * An ADT.
@@ -52,6 +51,7 @@ public class ContactList extends BaseAdapter {
 		return list.get(position).getId();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// return null;
@@ -70,7 +70,11 @@ public class ContactList extends BaseAdapter {
 
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.row_contact, null);
+		View v = inflater.inflate(android.R.layout.simple_list_item_2, null);
+		TextView t1 = (TextView) v.findViewById(android.R.id.text1);
+		TextView t2 = (TextView) v.findViewById(android.R.id.text2);
+		t1.setText(this.list.get(position).getFormattedName().toString());
+		t2.setText(this.list.get(position).getPrimaryPhone().toString());
 		return v;
 	}
 }
