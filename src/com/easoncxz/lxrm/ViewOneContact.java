@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
 public class ViewOneContact extends Activity {
@@ -16,16 +17,21 @@ public class ViewOneContact extends Activity {
 		setContentView(R.layout.activity_view_one_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		populateContents();
-		this.extras = this.getIntent().getExtras();
+		
+		// populateContents();
+		// this.extras = this.getIntent().getExtras();
 	}
 
 	/**
 	 * This method fills information passed from the object that instantiated
 	 * this into views.
+	 * 
+	 * @deprecated
 	 */
 	private void populateContents() {
 		// getViewById...
+		TextView v = (TextView) findViewById(R.id.personName);
+		v.setText(Long.toString(this.extras.getLong("id")));
 	}
 
 	/**

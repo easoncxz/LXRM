@@ -1,6 +1,7 @@
 package com.easoncxz.lxrm;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,54 +26,37 @@ public class MainActivity extends Activity {
 	 */
 	private void populateListView() {
 		// first register adapter for the ListView:
-
-		// ArrayAdapter<String> aa = new ArrayAdapter<String>(MainActivity.this,
-		// android.R.layout.simple_list_item_1, new String[] { "1", "2",
-		// "3" });
-		// l.setAdapter(aa);
-
 		DataStore ds = DataStoreFactory.getDataStore();
 		ContactList cl = ds.getContactsList(this);
-		l.setAdapter(cl);
+		this.l.setAdapter(cl);
 
 		// then registers event handlers for the ListView:
 		OnItemClickListener listener = new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(
-						MainActivity.this,
-						"id: " + Long.toString(id) + "\npos: "
-								+ Integer.toString(position),
-						Toast.LENGTH_SHORT).show();
-				// TODO
+				Intent i = new Intent(view.getContext(), ViewOneContact.class);
+				Bundle extras = new Bundle();
+				extras.putLong("id", id);
+				i.putExtras(extras);
+				MainActivity.this.startActivity(i, extras);
 			}
 		};
-		l.setOnItemClickListener(listener);
-	}
-
-	private void viewOneContact(AdapterView<?> parent, View view, int position,
-			long id) {
-		Intent i = new Intent();
-		i.setClass(MainActivity.this, ViewOneContact.class);
-		Bundle extras = new Bundle();
-		extras.putLong("id", id);
-		i.putExtras(extras);
-		startActivity(i, extras);
+		this.l.setOnItemClickListener(listener);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		l = (ListView) findViewById(R.id.list_of_contacts);
-		populateListView();
+		this.setContentView(R.layout.activity_main);
+		this.l = (ListView) findViewById(R.id.list_of_contacts);
+		this.populateListView();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		this.getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -84,7 +68,7 @@ public class MainActivity extends Activity {
 			// Toast.LENGTH_SHORT).show();
 			Intent i = new Intent();
 			i.setClass(this, NewContact.class);
-			startActivity(i);
+			this.startActivity(i);
 			return true;
 		case R.id.action_sort_contact_list:
 			Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
