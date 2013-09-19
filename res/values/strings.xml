@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_add_contact">Add contact</string>
-    <string name="action_sort_contact_list">Sort list</string>
+    <string name="action_search_contact_list">Search</string>
     <string name="title_activity_new_contact">New Contact</string>
     <string name="personNameLabel">Name</string>
     <string name="personNameHint">Enter name here …</string>

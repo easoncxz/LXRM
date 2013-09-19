@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.easoncxz.lxrm.R;
+
 /**
  * An ADT.
  */
@@ -42,13 +44,19 @@ public class ContactList extends BaseAdapter {
 		return list.get(position);
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * @deprecated
+	 * @see android.widget.Adapter#getItemId(int)
+	 */
 	@Override
 	public long getItemId(int position) {
 		return list.get(position).getId();
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * @deprecated
+	 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context

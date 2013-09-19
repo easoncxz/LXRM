@@ -1,11 +1,11 @@
 package com.easoncxz.lxrm;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
 
 public class ViewOneContact extends Activity {
 
@@ -14,12 +14,12 @@ public class ViewOneContact extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_view_one_contact);
+		this.setContentView(R.layout.activity_view_one_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
-		// populateContents();
-		// this.extras = this.getIntent().getExtras();
+
+		this.extras = this.getIntent().getExtras();
+		this.populateContents(this.extras);
 	}
 
 	/**
@@ -28,10 +28,10 @@ public class ViewOneContact extends Activity {
 	 * 
 	 * @deprecated
 	 */
-	private void populateContents() {
+	private void populateContents(Bundle extras) {
 		// getViewById...
-		TextView v = (TextView) findViewById(R.id.personName);
-		v.setText(Long.toString(this.extras.getLong("id")));
+		TextView v = (TextView) this.findViewById(R.id.personName);
+		v.setText(Long.toString(extras.getLong("id")));
 	}
 
 	/**

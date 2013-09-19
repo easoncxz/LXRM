@@ -1,7 +1,6 @@
 package com.easoncxz.lxrm;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,20 +17,20 @@ import com.easoncxz.lxrm.app.DataStoreFactory;
 
 public class MainActivity extends Activity {
 
-	private ListView l = null;
+	private ListView l;
+	private DataStore ds;
+	private ContactList cl;
 
 	/**
 	 * Private method that adapts to different ways of filling in the ListView
 	 * on this screen. Expect this method to interact with other classes.
 	 */
-	private void populateListView() {
+	private void populateListView(ContactList cl) {
 		// first register adapter for the ListView:
-		DataStore ds = DataStoreFactory.getDataStore();
-		ContactList cl = ds.getContactsList(this);
 		this.l.setAdapter(cl);
 
 		// then registers event handlers for the ListView:
-		OnItemClickListener listener = new OnItemClickListener() {
+		this.l.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -41,8 +40,7 @@ public class MainActivity extends Activity {
 				i.putExtras(extras);
 				MainActivity.this.startActivity(i, extras);
 			}
-		};
-		this.l.setOnItemClickListener(listener);
+		});
 	}
 
 	@Override
@@ -50,7 +48,10 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 		this.l = (ListView) findViewById(R.id.list_of_contacts);
-		this.populateListView();
+		
+		this.ds = DataStoreFactory.getDataStore();
+		this.cl = this.ds.getContactsList(this);
+		this.populateListView(this.cl);
 	}
 
 	@Override
@@ -64,13 +65,10 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_contact:
-			// Toast.makeText(this, "add contact btn clicked",
-			// Toast.LENGTH_SHORT).show();
-			Intent i = new Intent();
-			i.setClass(this, NewContact.class);
+			Intent i = new Intent(this, NewContact.class);
 			this.startActivity(i);
 			return true;
-		case R.id.action_sort_contact_list:
+		case R.id.action_search_contact_list:
 			Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
 					.show();
 			return true;
