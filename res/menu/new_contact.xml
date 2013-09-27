@@ -5,6 +5,6 @@
         android:icon="@android:drawable/ic_menu_save"
         android:orderInCategory="20"
         android:showAsAction="always"
-        android:title="@string/save"/>
+        android:title="@string/action_save"/>
 
 </menu>

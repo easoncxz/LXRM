@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_contact:
-			Intent i = new Intent(this, NewContact.class);
+			Intent i = new Intent(this, EditOneContact.class);
 			this.startActivity(i);
 			return true;
 		case R.id.action_search_contact_list:

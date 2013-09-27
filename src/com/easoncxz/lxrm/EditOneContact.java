@@ -4,9 +4,20 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
-public class NewContact extends Activity {
+public class EditOneContact extends Activity {
+
+	/**
+	 * @deprecated
+	 */
+	private void fillFields(Bundle extras) {
+		if (extras == null) {
+			Toast.makeText(this, "null bundle of extras", Toast.LENGTH_SHORT)
+					.show();
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -14,6 +25,7 @@ public class NewContact extends Activity {
 		setContentView(R.layout.activity_new_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		this.fillFields(this.getIntent().getExtras());
 	}
 
 	/**

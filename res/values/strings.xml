@@ -2,18 +2,19 @@
 <resources>
 
     <string name="app_name">LXRM</string>
-    <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
     <string name="action_add_contact">Add contact</string>
     <string name="action_search_contact_list">Search</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
     <string name="title_activity_new_contact">New Contact</string>
+    <string name="title_activity_view_one_contact">View contact</string>
     <string name="personNameLabel">Name</string>
     <string name="personNameHint">Enter name here …</string>
     <string name="primaryPhoneNumberLabel">Primary phone</string>
     <string name="primaryPhoneNumberHint">Enter number here …</string>
     <string name="primaryEmailLabel">Primary email</string>
     <string name="primaryEmailHint">Enter address here …</string>
-    <string name="save">Save</string>
-    <string name="title_activity_view_one_contact">View contact</string>
 
 </resources>
