@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.4" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="com.easoncxz.lxrm.MainActivity" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/MainActivity.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="205" y="62"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.easoncxz.lxrm.app.ContactList" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/ContactList.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="839" y="309"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.easoncxz.lxrm.app.DataStore" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/DataStore.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="548" y="68"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.easoncxz.lxrm.ViewOneContact" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/ViewOneContact.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="205" y="322"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.easoncxz.lxrm.EditOneContact" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/EditOneContact.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="462" y="311"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="com.easoncxz.lxrm.app.Contact.NameParser" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/Contact.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="745" y="951"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="com.easoncxz.lxrm.app.Contact" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/Contact.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="842" y="654"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="com.easoncxz.lxrm.app.Contact.Builder" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/Contact.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="933" y="951"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="com.easoncxz.lxrm.app.DataStoreFactory" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/DataStoreFactory.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="549" y="-66"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="com.easoncxz.lxrm.app.DBDataStore" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/DBDataStore.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="832" y="76"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="com.easoncxz.lxrm.app.FakeDataStore" project="LXRM" 
+    file="/LXRM/src/com/easoncxz/lxrm/app/FakeDataStore.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="833" y="-60"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <dependency id="12">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <generalization id="15">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="3"/>  
+  </generalization>  
+  <association id="16">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="17" name="fake"/>      
+      <multiplicity id="18" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="19">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="8"/>  
+  </nesting>  
+  <generalization id="20">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="3"/>  
+  </generalization>  
+  <association id="21">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="22" name="ds"/>      
+      <multiplicity id="23" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="24">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="6"/>  
+  </nesting>  
+  <dependency id="25">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="26">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <association id="28">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="29" name="list"/>      
+      <multiplicity id="30" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="31">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="32" name="cl"/>      
+      <multiplicity id="33" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

@@ -1,13 +1,18 @@
 package com.easoncxz.lxrm.app;
 
-import android.content.Context;
 
 public class DBDataStore extends DataStore {
 
 	@Override
-	public ContactList getContactsList(Context context) {
+	public ContactList get() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public boolean put(Contact contact) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }

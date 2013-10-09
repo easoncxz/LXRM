@@ -25,18 +25,21 @@ public class MainActivity extends Activity {
 	 * Private method that adapts to different ways of filling in the ListView
 	 * on this screen. Expect this method to interact with other classes.
 	 */
-	private void populateListView(ContactList cl) {
+	private void populateListView(ContactListAdapter cla) {
 		// first register adapter for the ListView:
-		this.l.setAdapter(cl);
+		l.setAdapter(cla);
 
 		// then registers event handlers for the ListView:
-		this.l.setOnItemClickListener(new OnItemClickListener() {
+		l.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent i = new Intent(view.getContext(), ViewOneContact.class);
 				Bundle extras = new Bundle();
+				
+				
 				extras.putLong("id", id);
+				
 				i.putExtras(extras);
 				MainActivity.this.startActivity(i, extras);
 			}
@@ -46,18 +49,19 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_main);
-		this.l = (ListView) findViewById(R.id.list_of_contacts);
+		setContentView(R.layout.activity_main);
+		l = (ListView) findViewById(R.id.list_of_contacts);
 		
-		this.ds = DataStoreFactory.getDataStore();
-		this.cl = this.ds.getContactsList(this);
-		this.populateListView(this.cl);
+		ds = DataStoreFactory.getDataStore();
+		cl = ds.get();
+		ContactListAdapter cla = new ContactListAdapter(this);
+		populateListView(cla);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		this.getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -66,7 +70,7 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.action_add_contact:
 			Intent i = new Intent(this, EditOneContact.class);
-			this.startActivity(i);
+			startActivity(i);
 			return true;
 		case R.id.action_search_contact_list:
 			Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
