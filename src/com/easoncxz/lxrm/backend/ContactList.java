@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.app;
+package com.easoncxz.lxrm.backend;
 
 import java.util.ArrayList;
 import java.util.List;

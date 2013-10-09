@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.app;
+package com.easoncxz.lxrm.backend;
 
 /**
  * A data abstraction class.

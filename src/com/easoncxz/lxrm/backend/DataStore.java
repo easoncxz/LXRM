@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.app;
+package com.easoncxz.lxrm.backend;
 
 /**
  * An abstraction layer for accessing data storage. Could be considered as an

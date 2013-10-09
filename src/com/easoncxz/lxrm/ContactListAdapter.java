@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.easoncxz.lxrm.app.Contact;
-import com.easoncxz.lxrm.app.ContactList;
+import com.easoncxz.lxrm.backend.Contact;
+import com.easoncxz.lxrm.backend.ContactList;
 
 @SuppressWarnings("deprecation")
 public class ContactListAdapter extends BaseAdapter {
@@ -21,8 +21,9 @@ public class ContactListAdapter extends BaseAdapter {
 		// throw an error due to no context provided?
 	}
 
-	public ContactListAdapter(Context context) {
+	public ContactListAdapter(Context context, ContactList model) {
 		this.context = context;
+		this.contactList = model;
 	}
 
 	@Override

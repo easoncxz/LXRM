@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.app;
+package com.easoncxz.lxrm.backend;
 
 public class FakeDataStore extends DataStore {
 

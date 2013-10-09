@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.app;
+package com.easoncxz.lxrm.backend;
 
 /**
  * Note: This class is perhaps not following the "factory pattern" strictly.
