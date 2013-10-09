@@ -4,15 +4,21 @@ package com.easoncxz.lxrm.backend;
 public class DBDataStore extends DataStore {
 
 	@Override
-	public ContactList get() {
+	public ContactList getAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean put(Contact contact) {
+	public long put(Contact contact) {
 		// TODO Auto-generated method stub
-		return false;
+		return -1;
+	}
+
+	@Override
+	public Contact get(long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

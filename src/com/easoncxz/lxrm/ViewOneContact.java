@@ -1,6 +1,7 @@
 package com.easoncxz.lxrm;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
@@ -9,38 +10,33 @@ import android.widget.TextView;
 
 public class ViewOneContact extends Activity {
 
-	private Bundle extras;
+	private long id = -1;
 
+	/**
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 * @deprecated
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_view_one_contact);
-		// Show the Up button in the action bar.
+		setContentView(R.layout.activity_view_one_contact);
+
 		setupActionBar();
 
-		this.extras = this.getIntent().getExtras();
-		this.populateContents(this.extras);
+		Bundle extras = getIntent().getExtras();
+		id = extras.getLong("id");
+
+		// scaffolding
+		TextView v = (TextView) findViewById(R.id.personName);
+		v.setText(Long.toString(id));
 	}
 
 	/**
-	 * This method fills information passed from the object that instantiated
-	 * this into views.
-	 * 
-	 * @deprecated
-	 */
-	private void populateContents(Bundle extras) {
-		// getViewById...
-		TextView v = (TextView) this.findViewById(R.id.personName);
-		v.setText(Long.toString(extras.getLong("id")));
-	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}.
+	 * A generated method: Set up the {@link android.app.ActionBar}.
 	 */
 	private void setupActionBar() {
-
+		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override
@@ -62,6 +58,15 @@ public class ViewOneContact extends Activity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.action_edit:
+			Intent i = new Intent(this, EditOneContact.class);
+			Bundle extras = new Bundle();
+			
+			extras.putLong("id", id);
+			
+			i.putExtras(extras);
+			startActivity(i, extras);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

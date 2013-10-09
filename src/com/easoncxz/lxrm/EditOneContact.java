@@ -1,11 +1,12 @@
 package com.easoncxz.lxrm;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.app.NavUtils;
 
 public class EditOneContact extends Activity {
 
@@ -16,6 +17,9 @@ public class EditOneContact extends Activity {
 		if (extras == null) {
 			Toast.makeText(this, "null bundle of extras", Toast.LENGTH_SHORT)
 					.show();
+		} else {
+			TextView v = (TextView) findViewById(R.id.personName);
+			v.setText(Long.toString(extras.getLong("id")));
 		}
 	}
 

@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 
 		l = (ListView) findViewById(R.id.list_of_contacts);
 		ds = DataStoreFactory.getDataStore();
-		ContactList cl = ds.get(); // dynamically loads latest data
+		ContactList cl = ds.getAll(); // dynamically loads latest data
 
 		// consider giving the VOCL a name?:
 		populateListView(l, new ContactListAdapter(this, cl),
