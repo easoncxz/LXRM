@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,17 +22,19 @@ public class MainActivity extends Activity {
 	private DataStore ds;
 
 	/**
-	 * Private method that adapts to different ways of filling in the ListView
-	 * on this screen. Expect this method to interact with other classes.
+	 * A general purpose ListView populater.
 	 */
-	private void populateListView(ContactListAdapter cla, ListView l) {
+	private void populateListView(ListView v, BaseAdapter a,
+			OnItemClickListener l) {
 		// first register adapter for the ListView:
-		l.setAdapter(cla);
-	
+		v.setAdapter(a);
 		// then registers event handlers for the ListView:
-		l.setOnItemClickListener(new ViewOneContactListener());
+		v.setOnItemClickListener(l);
 	}
 
+	/**
+	 * A listener class which is intended to be used by the main ListView.
+	 */
 	private class ViewOneContactListener implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -59,11 +62,12 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		l = (ListView) findViewById(R.id.list_of_contacts);
-		ContactList cl;
 		ds = DataStoreFactory.getDataStore();
-		cl = ds.get();
-		ContactListAdapter cla = new ContactListAdapter(this, cl);
-		populateListView(cla, l);
+		ContactList cl = ds.get(); // dynamically loads latest data
+
+		// consider giving the VOCL a name?:
+		populateListView(l, new ContactListAdapter(this, cl),
+				new ViewOneContactListener());
 	}
 
 	@Override
