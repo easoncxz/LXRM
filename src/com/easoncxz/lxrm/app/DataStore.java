@@ -9,5 +9,5 @@ import android.content.Context;
 public abstract class DataStore {
 
 	public abstract ContactList getContactsList(Context context);
-	
+
 }
