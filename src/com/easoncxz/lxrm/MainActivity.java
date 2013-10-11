@@ -3,6 +3,7 @@ package com.easoncxz.lxrm;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,11 +13,22 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.easoncxz.lxrm.backend.Contact;
 import com.easoncxz.lxrm.backend.ContactList;
 import com.easoncxz.lxrm.backend.DataStore;
 import com.easoncxz.lxrm.backend.DataStoreFactory;
 
+/**
+ * This is the main class and Activity of the entire app.
+ * <p>
+ * This Activity is the app home screen. This class interacts with UI elements.
+ * 
+ * @author eason
+ * 
+ */
 public class MainActivity extends Activity {
+
+	private static final int REQUEST_EDIT = 124857;
 
 	private ListView l;
 	private DataStore ds;
@@ -32,10 +44,21 @@ public class MainActivity extends Activity {
 		v.setOnItemClickListener(l);
 	}
 
+	@SuppressWarnings("unused")
+	private void startActivityByMyself(Intent intent) {
+		startActivity(intent);
+	}
+
+	private void startActivityForResultByMyself(Intent intent, int requestCode) {
+		startActivityForResult(intent, requestCode);
+	}
+
 	/**
 	 * A listener class which is intended to be used by the main ListView.
+	 * Accesses MainActivity's methods - coupling warning.
 	 */
 	private class ViewOneContactListener implements OnItemClickListener {
+		@SuppressWarnings("deprecation")
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
@@ -43,11 +66,13 @@ public class MainActivity extends Activity {
 			Bundle extras = new Bundle();
 
 			// get the id of the clicked item ready for the next/ activity.
-			extras.putLong("id", id);
+			extras.putLong(Contact.KEY_ID, id);
 
 			i.putExtras(extras);
 			if (parent instanceof ListView) {
-				parent.getContext().startActivity(i, extras);
+				// parent.getContext().startActivity(i);
+				MainActivity.this.startActivityForResult(i,
+						REQUEST_EDIT);
 			} else {
 				Toast.makeText(getApplicationContext(),
 						"What did you click on? I bet it's not a ListView.",
@@ -95,6 +120,25 @@ public class MainActivity extends Activity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// super.onActivityResult(requestCode, resultCode, data);
+
+		// ignores requestCode
+		if (requestCode == REQUEST_EDIT) {
+			if (resultCode == RESULT_OK) {
+				Log.d("MainActivity_CXZ", "onActivityResult() !!!");
+				Log.d("MainActivity_CXZ",
+						"The result code is: " + Integer.toString(resultCode));
+				Log.d("MainActivity_CXZ",
+						"The id received is: "
+								+ Long.toString(data.getLongExtra(
+										Contact.KEY_ID, -1)));
+			}
+		}
+
 	}
 
 }

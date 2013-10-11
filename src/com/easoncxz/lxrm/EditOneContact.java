@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class EditOneContact extends Activity {
+	
+	public static final String RESULT_WANTED_TO_VIEW = "I_want_to_view_this_contact";
 
 	/**
 	 * @deprecated

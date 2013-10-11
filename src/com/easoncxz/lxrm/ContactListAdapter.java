@@ -10,6 +10,14 @@ import android.widget.TextView;
 import com.easoncxz.lxrm.backend.Contact;
 import com.easoncxz.lxrm.backend.ContactList;
 
+/**
+ * This is a wrapper around the {@link ContactList} class.
+ * <p>
+ * This class interacts with UI elements.
+ * 
+ * @author eason
+ *
+ */
 @SuppressWarnings("deprecation")
 public class ContactListAdapter extends BaseAdapter {
 

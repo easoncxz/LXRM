@@ -10,6 +10,8 @@ package com.easoncxz.lxrm.backend;
  * @deprecated {@link NameParser} involves fake implementation.
  */
 public final class Contact {
+	
+	public static final String KEY_ID = "id";
 
 	// what to do with un-initialized fields?
 	private String firstName;

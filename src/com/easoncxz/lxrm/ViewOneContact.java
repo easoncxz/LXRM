@@ -4,11 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.easoncxz.lxrm.backend.Contact;
+
+@SuppressWarnings("deprecation")
 public class ViewOneContact extends Activity {
+
+	public static final String RESULT_WANTED_TO_EDIT = "I want to edit this contact";
 
 	private long id = -1;
 
@@ -24,7 +30,7 @@ public class ViewOneContact extends Activity {
 		setupActionBar();
 
 		Bundle extras = getIntent().getExtras();
-		id = extras.getLong("id");
+		id = extras.getLong(Contact.KEY_ID);
 
 		// scaffolding
 		TextView v = (TextView) findViewById(R.id.personName);
@@ -60,13 +66,20 @@ public class ViewOneContact extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.action_edit:
-			Intent i = new Intent(this, EditOneContact.class);
+			// destroys current Activity and tells MainActivity to start the
+			// EditOneContact Activity.
+
+			Intent result = new Intent();
 			Bundle extras = new Bundle();
-			
-			extras.putLong("id", id);
-			
-			i.putExtras(extras);
-			startActivity(i, extras);
+			extras.putLong(Contact.KEY_ID, id);
+			result.putExtras(extras);
+
+			// startActivity(i, extras);
+			Log.d("ViewOneContact_CXZ",
+					"Trying to call setResult(int, Intent).");
+			setResult(RESULT_OK, result);
+			finish();
+
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
