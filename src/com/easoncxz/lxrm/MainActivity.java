@@ -77,7 +77,10 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		l = (ListView) findViewById(R.id.list_of_contacts);
+
+		// WARNING: this statement could take a long time!
 		ds = DataStoreFactory.getDataStore();
+
 		ContactList cl = ds.getAll(); // dynamically loads latest data
 
 		// consider giving the ViewOneContactListener a name?:
