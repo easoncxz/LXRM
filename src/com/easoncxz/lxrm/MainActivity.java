@@ -28,7 +28,8 @@ import com.easoncxz.lxrm.backend.DataStoreFactory;
  */
 public class MainActivity extends Activity {
 
-	private static final int REQUEST_EDIT = 124857;
+	private static final int REQUEST_EDIT = 124857; // random number
+	private static final int REQUEST_VIEW = 124858; // random number
 
 	private ListView l;
 	private DataStore ds;
@@ -42,15 +43,6 @@ public class MainActivity extends Activity {
 		v.setAdapter(a);
 		// then registers event handlers for the ListView:
 		v.setOnItemClickListener(l);
-	}
-
-	@SuppressWarnings("unused")
-	private void startActivityByMyself(Intent intent) {
-		startActivity(intent);
-	}
-
-	private void startActivityForResultByMyself(Intent intent, int requestCode) {
-		startActivityForResult(intent, requestCode);
 	}
 
 	/**
@@ -70,9 +62,7 @@ public class MainActivity extends Activity {
 
 			i.putExtras(extras);
 			if (parent instanceof ListView) {
-				// parent.getContext().startActivity(i);
-				MainActivity.this.startActivityForResult(i,
-						REQUEST_EDIT);
+				MainActivity.this.startActivityForResult(i, REQUEST_VIEW);
 			} else {
 				Toast.makeText(getApplicationContext(),
 						"What did you click on? I bet it's not a ListView.",
@@ -124,18 +114,17 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// super.onActivityResult(requestCode, resultCode, data);
-
-		// ignores requestCode
-		if (requestCode == REQUEST_EDIT) {
+		if (requestCode == REQUEST_VIEW) {
 			if (resultCode == RESULT_OK) {
-				Log.d("MainActivity_CXZ", "onActivityResult() !!!");
-				Log.d("MainActivity_CXZ",
-						"The result code is: " + Integer.toString(resultCode));
-				Log.d("MainActivity_CXZ",
-						"The id received is: "
-								+ Long.toString(data.getLongExtra(
-										Contact.KEY_ID, -1)));
+				Intent i = new Intent(this, EditOneContact.class);
+				i.putExtras(data);
+				startActivityForResult(i, REQUEST_EDIT);
+			}
+		} else if (requestCode == REQUEST_EDIT) {
+			if (resultCode == RESULT_OK) {
+				Intent i = new Intent(this, ViewOneContact.class);
+				i.putExtras(data);
+				startActivityForResult(i, REQUEST_VIEW);
 			}
 		}
 
