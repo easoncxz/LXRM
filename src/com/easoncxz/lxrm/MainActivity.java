@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 		ds = DataStoreFactory.getDataStore();
 		ContactList cl = ds.getAll(); // dynamically loads latest data
 
-		// consider giving the VOCL a name?:
+		// consider giving the ViewOneContactListener a name?:
 		populateListView(l, new ContactListAdapter(this, cl),
 				new ViewOneContactListener());
 	}
@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.action_add_contact:
 			Intent i = new Intent(this, EditOneContact.class);
-			startActivity(i);
+			startActivityForResult(i, REQUEST_EDIT);
 			return true;
 		case R.id.action_search_contact_list:
 			Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
