@@ -1,9 +1,17 @@
 package com.easoncxz.lxrm.backend;
 
+import android.content.Context;
+
 /**
  * An abstraction layer for accessing data storage.
  */
 public abstract class DataStore {
+
+	Context context;
+
+	public DataStore(Context context) {
+		this.context = context;
+	}
 
 	/**
 	 * @return a list of all contacts stored in this data store.

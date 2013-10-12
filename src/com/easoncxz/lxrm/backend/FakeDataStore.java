@@ -1,6 +1,12 @@
 package com.easoncxz.lxrm.backend;
 
+import android.content.Context;
+
 public class FakeDataStore extends DataStore {
+
+	public FakeDataStore(Context context) {
+		super(context);
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override

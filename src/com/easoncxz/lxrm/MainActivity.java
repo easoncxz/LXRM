@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 		l = (ListView) findViewById(R.id.list_of_contacts);
 
 		// WARNING: this statement could take a long time!
-		ds = DataStoreFactory.getDataStore();
+		ds = DataStoreFactory.getDataStore(this);
 
 		ContactList cl = ds.getAll(); // dynamically loads latest data
 
