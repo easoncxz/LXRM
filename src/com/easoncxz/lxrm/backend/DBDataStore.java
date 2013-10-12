@@ -18,7 +18,7 @@ public class DBDataStore extends DataStore {
 		private static final String COLUMN_ID = "_id";
 		// private static final String COLUMN_PERSON_NAME = "name";
 
-		private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS"
+		private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS "
 				+ TABLE_PERSONS + " (" + COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT )";
 
