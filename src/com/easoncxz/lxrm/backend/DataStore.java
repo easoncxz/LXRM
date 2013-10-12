@@ -33,6 +33,8 @@ public abstract class DataStore {
 	 * Store the given Contact object into this data store. Where to store
 	 * depends on the id field of that Contact object - this means this method
 	 * overwrites existing stored contacts.
+	 * <p>
+	 * To store a new contact, pass in a Contact object with an id field of -1.
 	 * 
 	 * @param contact
 	 * @return the id of where the given contact is put.
