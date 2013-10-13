@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 	private static final int REQUEST_VIEW = 124858; // random number
 
 	private ListView l;
+	private ContactList cl;
 	private DataStore ds;
 
 	/**
@@ -80,8 +81,12 @@ public class MainActivity extends Activity {
 
 		// WARNING: this statement could take a long time!
 		ds = DataStoreFactory.getDataStore(this);
+	}
 
-		ContactList cl = ds.getAll(); // dynamically loads latest data
+	@Override
+	protected void onStart() {
+		super.onStart();
+		cl = ds.getAll(); // dynamically loads latest data
 
 		// consider giving the ViewOneContactListener a name?:
 		populateListView(l, new ContactListAdapter(this, cl),
@@ -98,10 +103,12 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_add_contact:
+		case R.id.action_add_contact: {
 			Intent i = new Intent(this, EditOneContact.class);
+			// the "extras" for Intent i is a null!
 			startActivityForResult(i, REQUEST_EDIT);
 			return true;
+		}
 		case R.id.action_search_contact_list:
 			Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
 					.show();

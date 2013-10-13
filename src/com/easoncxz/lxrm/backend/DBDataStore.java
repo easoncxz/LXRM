@@ -14,13 +14,15 @@ public class DBDataStore extends DataStore {
 		private static final String DATABASE_NAME = "DBDeMerde";
 		private static final int DATABASE_VERSION = 1;
 
-		private static final String TABLE_PERSONS = "contacts";
+		private static final String TABLE_CONTACTS = "contacts";
 		private static final String COLUMN_ID = "_id";
+		private static final String COLUMN_TAG = "useless_column";
 		// private static final String COLUMN_PERSON_NAME = "name";
 
-		private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS "
-				+ TABLE_PERSONS + " (" + COLUMN_ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT )";
+		private static final String SQL_CREATE = "CREATE TABLE "
+				+ TABLE_CONTACTS + " (" + COLUMN_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TAG
+				+ " TEXT);";
 
 		public Helper(Context context) {
 			// see:
@@ -56,8 +58,16 @@ public class DBDataStore extends DataStore {
 	public long put(Contact contact) {
 		SQLiteDatabase db = h.getWritableDatabase();
 		ContentValues cv = new ContentValues();
-		cv.put(Helper.COLUMN_ID, contact.getId());
-		long id = db.insert(Helper.TABLE_PERSONS, null, cv);
+		long id = contact.getId();
+
+		cv.put(Contact.KEY_TAG, contact.getFormattedName());
+		if (id == -1) {
+			id = db.insert(Helper.TABLE_CONTACTS, null, cv);
+		} else {
+			cv.put(Helper.COLUMN_ID, id);
+			db.update(Helper.TABLE_CONTACTS, cv, Helper.COLUMN_ID + " == ?",
+					new String[] { Long.toString(id) });
+		}
 		db.close();
 		return id;
 	}
@@ -68,13 +78,11 @@ public class DBDataStore extends DataStore {
 		SQLiteDatabase db = h.getReadableDatabase();
 		// ContentValues cv = new ContentValues();
 		// cv.put(Helper.COLUMN_ID, id);
-		Cursor cursor = db.query(Helper.TABLE_PERSONS,
+		Cursor cursor = db.query(Helper.TABLE_CONTACTS,
 				new String[] { Helper.COLUMN_ID }, Helper.COLUMN_ID + "== ?",
 				new String[] { Long.toString(id) }, null, null, null, null);
 		Contact contact = null; // sometimes will be returned while being null.
 		if (cursor.getCount() > 1) {
-			Log.e("DBDataStoreTag",
-					"Error!! Found more than 1 contact with the same ID?!");
 			throw new RuntimeException(
 					"Error!! Found more than 1 contact with the same ID?!");
 		} else if (cursor.getCount() == 1) {
@@ -88,20 +96,23 @@ public class DBDataStore extends DataStore {
 	@Override
 	public ContactList getAll() {
 		SQLiteDatabase db = h.getWritableDatabase();
-		Cursor rows = db
-				.query(Helper.TABLE_PERSONS, new String[] { Helper.COLUMN_ID },
-						null, null, null, null, null);
-		ContactList l = new ContactList();
+		Cursor rows = db.query(Helper.TABLE_CONTACTS, new String[] {
+				Helper.COLUMN_ID, Helper.COLUMN_TAG }, null, null, null, null,
+				null);
+		ContactList cl = new ContactList();
 		if (rows.moveToFirst()) {
 			do {
 				long id = rows.getLong(0);
-				Contact c = (new Contact.Builder(Long.toString(id),
-						"phone - yes!", "email, yes!!")).build();
-				l.add(c);
+				Contact c = (new Contact.Builder(
+						rows.getString(1),
+						"phone - yes!" + " BTW the id is: " + Long.toString(id),
+						"email, yes!!")).id(id).build();
+				Log.d("getAll", "got id: " + Long.toString(id));
+				cl.add(c);
 			} while (rows.moveToNext());
 		}
 		db.close();
-		return l;
+		return cl;
 	}
 
 }

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easoncxz.lxrm.backend.Contact;
+import com.easoncxz.lxrm.backend.DataStore;
+import com.easoncxz.lxrm.backend.DataStoreFactory;
 
 @SuppressWarnings("deprecation")
 public class EditOneContact extends Activity {
@@ -38,10 +40,16 @@ public class EditOneContact extends Activity {
 		setContentView(R.layout.activity_new_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		Bundle extras = getIntent().getExtras();
-		this.fillFields(extras);
 
-		id = extras.getLong(Contact.KEY_ID);
+		Bundle extras = getIntent().getExtras();
+		// might be null - when creating new contact
+
+		fillFields(extras);
+
+		if (extras != null) {
+			id = extras.getLong(Contact.KEY_ID, -1);
+			// The "-1" is superfluous.
+		}
 	}
 
 	/**
@@ -74,6 +82,16 @@ public class EditOneContact extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.action_save:
+			Contact c = (new Contact.Builder(
+					((TextView) findViewById(R.id.personName)).getText()
+							.toString(),
+					((TextView) findViewById(R.id.primaryPhoneField)).getText()
+							.toString(),
+					((TextView) findViewById(R.id.primaryEmailField)).getText()
+							.toString())).id(id).build();
+			DataStore ds = DataStoreFactory
+					.getDataStore(getApplicationContext());
+			id = ds.put(c);
 			Intent result = new Intent();
 			Bundle b = new Bundle();
 			b.putLong(Contact.KEY_ID, id);

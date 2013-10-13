@@ -10,8 +10,9 @@ package com.easoncxz.lxrm.backend;
  * @deprecated {@link NameParser} involves fake implementation.
  */
 public final class Contact {
-	
+
 	public static final String KEY_ID = "id";
+	public static final String KEY_TAG = "useless_column";
 
 	// what to do with un-initialized fields?
 	private String firstName;
@@ -45,8 +46,8 @@ public final class Contact {
 		public Builder secondaryEmail(String secondaryEmail) {
 			return this;
 		}
-		
-		public Builder id(long id){
+
+		public Builder id(long id) {
 			this.id = id;
 			return this;
 		}
