@@ -6,9 +6,6 @@ import java.util.List;
 import android.content.Context;
 import android.widget.BaseAdapter;
 
-/**
- * An ADT.
- */
 public class ContactList {
 
 	public ContactList() {
