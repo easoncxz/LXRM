@@ -14,12 +14,10 @@ import com.easoncxz.lxrm.backend.ContactList;
  * This is a wrapper around the {@link ContactList} class.
  * <p>
  * This class interacts with UI elements.
- * 
- * @author eason
- *
  */
 @SuppressWarnings("deprecation")
 public class ContactListAdapter extends BaseAdapter {
+	// will later implement SectionIndexer
 
 	private ContactList contactList;
 	private Context context;
@@ -49,7 +47,7 @@ public class ContactListAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated due to Contact.
 	 * @see android.widget.Adapter#getItemId(int)
 	 */
 	@Override
@@ -66,13 +64,10 @@ public class ContactListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(android.R.layout.simple_list_item_2, null);
-		TextView t1 = (TextView) v.findViewById(android.R.id.text1);
-		TextView t2 = (TextView) v.findViewById(android.R.id.text2);
-		t1.setText(((Contact) contactList.get(position)).getFormattedName()
-				.toString());
-		t2.setText(((Contact) contactList.get(position)).getPrimaryPhone()
-				.toString());
+		View v = inflater.inflate(android.R.layout.simple_list_item_1, null);
+		TextView t = (TextView) v.findViewById(android.R.id.text1);
+		t.setText(((Contact) contactList.get(position)).getName()
+				.formattedName().toString());
 		return v;
 	}
 

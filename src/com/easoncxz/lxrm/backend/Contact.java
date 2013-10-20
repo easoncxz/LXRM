@@ -165,7 +165,8 @@ public final class Contact {
 
 	/**
 	 * Important field. Being used everywhere in the application. Initialized to
-	 * -1 in the Builder; -1 indicates a new contact yet to be stored.
+	 * -1 in the Builder; -1 indicates a new contact yet to be stored. Stays
+	 * unchanged for each Contact object after instantiation.
 	 */
 	private long id;
 	private Name name;
