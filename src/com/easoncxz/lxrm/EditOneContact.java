@@ -13,9 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.easoncxz.lxrm.backend.Contact;
-import com.easoncxz.lxrm.backend.DataStore;
-import com.easoncxz.lxrm.backend.DataStoreFactory;
+import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.Name;
+import com.easoncxz.lxrm.storage.DataStore;
+import com.easoncxz.lxrm.storage.DataStoreFactory;
 
 @SuppressWarnings("deprecation")
 public class EditOneContact extends Activity {
@@ -113,7 +114,7 @@ public class EditOneContact extends Activity {
 			Contact c;
 			if (this.c != null) {
 				c = this.c;
-				Contact.Name name = new Contact.Name(
+				Name name = new Name(
 						((TextView) findViewById(R.id.person_name_field))
 								.getText().toString());
 				c.putName(name);

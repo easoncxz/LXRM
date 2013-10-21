@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.easoncxz.lxrm.backend.Contact;
-import com.easoncxz.lxrm.backend.ContactList;
+import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.ContactList;
 
 /**
  * This is a wrapper around the {@link ContactList} class.

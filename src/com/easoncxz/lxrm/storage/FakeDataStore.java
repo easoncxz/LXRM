@@ -1,6 +1,9 @@
-package com.easoncxz.lxrm.backend;
+package com.easoncxz.lxrm.storage;
 
 import android.content.Context;
+
+import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.ContactList;
 
 public class FakeDataStore extends DataStore {
 

@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.backend;
+package com.easoncxz.lxrm.storage;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.ContactList;
 
 public class DBDataStore extends DataStore {
 

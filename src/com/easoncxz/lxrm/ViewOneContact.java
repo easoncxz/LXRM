@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.easoncxz.lxrm.backend.Contact;
-import com.easoncxz.lxrm.backend.DataStore;
-import com.easoncxz.lxrm.backend.DataStoreFactory;
+import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.storage.DataStore;
+import com.easoncxz.lxrm.storage.DataStoreFactory;
 
 @SuppressWarnings("deprecation")
 public class ViewOneContact extends Activity {

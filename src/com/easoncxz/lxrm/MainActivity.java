@@ -13,10 +13,10 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.easoncxz.lxrm.backend.Contact;
-import com.easoncxz.lxrm.backend.ContactList;
-import com.easoncxz.lxrm.backend.DataStore;
-import com.easoncxz.lxrm.backend.DataStoreFactory;
+import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.ContactList;
+import com.easoncxz.lxrm.storage.DataStore;
+import com.easoncxz.lxrm.storage.DataStoreFactory;
 
 /**
  * This is the main class and Activity of the entire app.

@@ -1,4 +1,4 @@
-package com.easoncxz.lxrm.backend;
+package com.easoncxz.lxrm.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class ContactList {
 	public int size() {
 		return list.size();
 	}
-	
+
 	public void add(Contact contact) {
 		list.add(contact);
 	}

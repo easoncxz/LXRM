@@ -1,6 +1,8 @@
-package com.easoncxz.lxrm.backend;
+package com.easoncxz.lxrm.storage;
 
 import android.content.Context;
+
+import com.easoncxz.lxrm.models.Contact;
 
 /**
  * Note: This class is perhaps not following the "factory pattern" strictly.
