@@ -98,6 +98,7 @@ public class DBDataStore extends DataStore {
 	@SuppressWarnings("deprecation")
 	@Override
 	public ContactList getAll() {
+		Log.d("DBDataStore#getAll", "entering method");
 		SQLiteDatabase db = h.getWritableDatabase();
 		Cursor rows = db.query(Helper.TABLE_CONTACTS, new String[] {
 				Helper.COLUMN_ID, Helper.COLUMN_TAG }, null, null, null, null,
@@ -109,7 +110,6 @@ public class DBDataStore extends DataStore {
 				Contact c = (new Contact.Builder(rows.getString(1)
 						+ " BTW the id is: " + Long.toString(id))).id(id)
 						.build();
-				Log.d("DBDataStore#getAll", "got id: " + Long.toString(id));
 				cl.add(c);
 			} while (rows.moveToNext());
 		}

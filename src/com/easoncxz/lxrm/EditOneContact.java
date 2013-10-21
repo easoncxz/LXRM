@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.easoncxz.lxrm.backend.Contact;
+import com.easoncxz.lxrm.backend.Contact.Name;
 import com.easoncxz.lxrm.backend.DataStore;
 import com.easoncxz.lxrm.backend.DataStoreFactory;
 
@@ -28,6 +30,8 @@ public class EditOneContact extends Activity {
 		if (contact == null) {
 			// do nothing, or
 			// throw new RuntimeException("Contact shouldn't be null");
+			Toast.makeText(this, "Creating new contact", Toast.LENGTH_SHORT)
+					.show();
 		} else {
 			TextView v = (TextView) findViewById(R.id.personName);
 			v.setText(contact.getName().formattedName());
@@ -94,9 +98,18 @@ public class EditOneContact extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.action_save:
-			Contact c = (new Contact.Builder(
-					((TextView) findViewById(R.id.personName)).getText()
-							.toString())).build();
+			Contact c;
+			if (this.c != null) {
+				c = this.c;
+				Contact.Name name = new Contact.Name(
+						((TextView) findViewById(R.id.personName)).getText()
+								.toString());
+				c.putName(name);
+			} else {
+				c = (new Contact.Builder(
+						((TextView) findViewById(R.id.personName)).getText()
+								.toString())).build();
+			}
 			// TODO create the contact object properly: include multiple Phones,
 			// Emails
 

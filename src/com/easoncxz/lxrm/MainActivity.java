@@ -110,7 +110,7 @@ public class MainActivity extends Activity {
 			Intent i = new Intent(this, EditOneContact.class);
 			// the "extras" for Intent i is a null!
 			Log.d("MainActivity",
-					"Attemping to start EditOneContact from MainActivity");
+					"#onOptionsItemSelected: creating new contact");
 			startActivityForResult(i, REQUEST_EDIT);
 			return true;
 		}
@@ -134,7 +134,8 @@ public class MainActivity extends Activity {
 				long id = data.getLongExtra(Contact.KEY_ID, -1);
 				Log.d("MainActivity",
 						"id of contact to edit is: " + Long.toString(id));
-				Intent i = new Intent(MainActivity.this, EditOneContact.class);
+				Intent i = new Intent(this, EditOneContact.class);
+				i.putExtra(Contact.KEY_ID, id);
 				Log.d("MainActivity", "Created an intent");
 
 				startActivityForResult(i, REQUEST_EDIT);
@@ -142,7 +143,8 @@ public class MainActivity extends Activity {
 		} else if (requestCode == REQUEST_EDIT) {
 			if (resultCode == RESULT_OK) {
 				Intent i = new Intent(this, ViewOneContact.class);
-				i.putExtras(data);
+				long id = data.getLongExtra(Contact.KEY_ID, -1);
+				i.putExtra(Contact.KEY_ID, id);
 				startActivityForResult(i, REQUEST_VIEW);
 			}
 		}

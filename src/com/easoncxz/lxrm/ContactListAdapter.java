@@ -52,7 +52,7 @@ public class ContactListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public long getItemId(int position) {
-		return ((Contact) contactList.get(position)).getId();
+		return contactList.get(position).getId();
 	}
 
 	/**
