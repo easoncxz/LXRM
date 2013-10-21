@@ -2,18 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
-    android:padding="0dp" >
+    android:padding="@dimen/margin"
+    tools:context=".EditOneContact" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".ViewOneContact" >
+        android:orientation="vertical" >
 
         <TextView
             style="?android:attr/listSeparatorTextViewStyle"
@@ -21,15 +16,15 @@
             android:layout_height="wrap_content"
             android:text="@string/person_name_header" />
 
-        <TextView
+        <EditText
             android:id="@+id/person_name_field"
-            style="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/half_margin"
-            android:text="@string/hello_world" />
+            android:hint="@string/person_name_hint"
+            android:inputType="textPersonName" />
 
         <TextView
+            android:id="@+id/phones_header"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +39,14 @@
             android:orientation="vertical"
             android:padding="@dimen/half_margin" />
 
+        <Button
+            android:id="@+id/add_phone_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_add" />
+
         <TextView
+            android:id="@+id/emails_header"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,12 +54,18 @@
             android:text="@string/emails_header" />
 
         <LinearLayout
-            android:id="@+id/email_labels_layout"
+            android:id="@+id/email_fields_layout"
             style="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/half_margin" />
+
+        <Button
+            android:id="@+id/add_email_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_add" />
     </LinearLayout>
 
 </ScrollView>

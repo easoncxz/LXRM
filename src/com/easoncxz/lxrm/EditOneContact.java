@@ -5,13 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easoncxz.lxrm.backend.Contact;
-import com.easoncxz.lxrm.backend.Contact.Name;
 import com.easoncxz.lxrm.backend.DataStore;
 import com.easoncxz.lxrm.backend.DataStoreFactory;
 
@@ -33,17 +35,27 @@ public class EditOneContact extends Activity {
 			Toast.makeText(this, "Creating new contact", Toast.LENGTH_SHORT)
 					.show();
 		} else {
-			TextView v = (TextView) findViewById(R.id.personName);
+			TextView v = (TextView) findViewById(R.id.person_name_field);
 			v.setText(contact.getName().formattedName());
 			// TODO emails & phones too.
 		}
+		LinearLayout emailFieldsLayout = (LinearLayout) findViewById(R.id.email_fields_layout);
+		LinearLayout phoneFieldsLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
+		LayoutInflater inflater = getLayoutInflater();
+		View inflated = inflater.inflate(R.layout.email_field,
+				emailFieldsLayout);
+		inflated = inflater.inflate(R.layout.email_field, emailFieldsLayout);
+		inflated = inflater.inflate(R.layout.email_field, emailFieldsLayout);
+		inflated = inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
+		inflated = inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
+		inflated = inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_new_contact);
+		setContentView(R.layout.activity_edit_one_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
 		ds = DataStoreFactory.getDataStore(this);
@@ -80,7 +92,7 @@ public class EditOneContact extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.new_contact, menu);
+		getMenuInflater().inflate(R.menu.edit_one_contact, menu);
 		return true;
 	}
 
@@ -102,13 +114,13 @@ public class EditOneContact extends Activity {
 			if (this.c != null) {
 				c = this.c;
 				Contact.Name name = new Contact.Name(
-						((TextView) findViewById(R.id.personName)).getText()
-								.toString());
+						((TextView) findViewById(R.id.person_name_field))
+								.getText().toString());
 				c.putName(name);
 			} else {
 				c = (new Contact.Builder(
-						((TextView) findViewById(R.id.personName)).getText()
-								.toString())).build();
+						((TextView) findViewById(R.id.person_name_field))
+								.getText().toString())).build();
 			}
 			// TODO create the contact object properly: include multiple Phones,
 			// Emails

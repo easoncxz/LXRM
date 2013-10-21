@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.easoncxz.lxrm.backend.Contact;
@@ -19,6 +22,8 @@ public class ViewOneContact extends Activity {
 	public static final String RESULT_WANTED_TO_EDIT = "I want to edit this c";
 
 	private Contact c;
+
+	private LinearLayout phonesLayout, emailsLayout;
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -40,9 +45,20 @@ public class ViewOneContact extends Activity {
 			throw new RuntimeException("Cannot view an unsaved contact");
 		}
 
-		TextView v = (TextView) findViewById(R.id.personName);
+		TextView v = (TextView) findViewById(R.id.person_name_field);
 		v.setText(this.c.getName().formattedName());
 		// TODO fill in emails & phones
+
+		phonesLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
+		emailsLayout = (LinearLayout) findViewById(R.id.email_labels_layout);
+
+		LayoutInflater inflater = getLayoutInflater();
+		View inflated = inflater.inflate(R.layout.phone_label, phonesLayout);
+		inflated = inflater.inflate(R.layout.phone_label, phonesLayout);
+		inflated = inflater.inflate(R.layout.phone_label, phonesLayout);
+		inflated = inflater.inflate(R.layout.email_label, emailsLayout);
+		inflated = inflater.inflate(R.layout.email_label, emailsLayout);
+		inflated = inflater.inflate(R.layout.email_label, emailsLayout);
 	}
 
 	/**
