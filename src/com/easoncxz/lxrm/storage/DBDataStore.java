@@ -19,12 +19,11 @@ public class DBDataStore extends DataStore {
 
 		private static final String TABLE_CONTACTS = "contacts";
 		private static final String COLUMN_ID = "_id";
-		private static final String COLUMN_TAG = "useless_column";
-		// private static final String COLUMN_PERSON_NAME = "name";
+		private static final String COLUMN_PERSON_NAME = "name";
 
 		private static final String SQL_CREATE = "CREATE TABLE "
 				+ TABLE_CONTACTS + " (" + COLUMN_ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TAG
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_PERSON_NAME
 				+ " TEXT);";
 
 		public Helper(Context context) {
@@ -43,17 +42,13 @@ public class DBDataStore extends DataStore {
 			// don't know what to do here.
 		}
 
-		@Override
-		public SQLiteDatabase getWritableDatabase() {
-			return super.getWritableDatabase();
-		}
 	}
 
 	private SQLiteOpenHelper h;
 
 	public DBDataStore(Context context) {
 		super(context);
-		h = new Helper(context);
+		this.h = new Helper(context);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -64,7 +59,7 @@ public class DBDataStore extends DataStore {
 		ContentValues cv = new ContentValues();
 		long id = contact.getId();
 
-		cv.put(Helper.COLUMN_TAG, contact.getName().formattedName());
+		cv.put(Helper.COLUMN_PERSON_NAME, contact.getName().formattedName());
 		if (id == -1) {
 			id = db.insert(Helper.TABLE_CONTACTS, null, cv);
 		} else {
@@ -79,6 +74,7 @@ public class DBDataStore extends DataStore {
 	@SuppressWarnings("deprecation")
 	@Override
 	public Contact get(long id) {
+		Log.d("DBDataStore", "this is DBDataStore#get");
 		SQLiteDatabase db = h.getReadableDatabase();
 		// ContentValues cv = new ContentValues();
 		// cv.put(Helper.COLUMN_ID, id);
@@ -102,10 +98,10 @@ public class DBDataStore extends DataStore {
 	@Override
 	public ContactList getAll() {
 		Log.d("DBDataStore#getAll", "entering method");
-		SQLiteDatabase db = h.getWritableDatabase();
+		SQLiteDatabase db = h.getReadableDatabase();
 		Cursor rows = db.query(Helper.TABLE_CONTACTS, new String[] {
-				Helper.COLUMN_ID, Helper.COLUMN_TAG }, null, null, null, null,
-				null);
+				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, null, null,
+				null, null, null);
 		ContactList cl = new ContactList();
 		if (rows.moveToFirst()) {
 			do {
