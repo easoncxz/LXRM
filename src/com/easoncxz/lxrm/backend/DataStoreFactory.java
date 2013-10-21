@@ -17,8 +17,7 @@ public class DataStoreFactory {
 		}
 		if (real == null) {
 			real = new DBDataStore(context);
-			real.put((new Contact.Builder("John Doe", "phone default",
-					"email defaul")).build());
+			real.put((new Contact.Builder("John Doe").id(-1)).build());
 		}
 		return real;
 	}

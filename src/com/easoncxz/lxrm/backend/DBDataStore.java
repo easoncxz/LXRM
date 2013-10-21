@@ -60,7 +60,7 @@ public class DBDataStore extends DataStore {
 		ContentValues cv = new ContentValues();
 		long id = contact.getId();
 
-		cv.put(Contact.KEY_TAG, contact.getFormattedName());
+		cv.put(Contact.KEY_TAG, contact.getName().formattedName());
 		if (id == -1) {
 			id = db.insert(Helper.TABLE_CONTACTS, null, cv);
 		} else {
@@ -85,9 +85,11 @@ public class DBDataStore extends DataStore {
 		if (cursor.getCount() > 1) {
 			throw new RuntimeException(
 					"Error!! Found more than 1 contact with the same ID?!");
+		} else if (cursor.getCount() < 1) {
+			throw new RuntimeException("No contact with that id found");
+			// TODO change this to a checked exception.
 		} else if (cursor.getCount() == 1) {
-			contact = (new Contact.Builder(Long.toString(id), "gotten phone",
-					"gotten email!!")).build();
+			contact = (new Contact.Builder(Long.toString(id))).id(id).build();
 		}
 		return contact;
 	}
@@ -103,10 +105,9 @@ public class DBDataStore extends DataStore {
 		if (rows.moveToFirst()) {
 			do {
 				long id = rows.getLong(0);
-				Contact c = (new Contact.Builder(
-						rows.getString(1),
-						"phone - yes!" + " BTW the id is: " + Long.toString(id),
-						"email, yes!!")).id(id).build();
+				Contact c = (new Contact.Builder(rows.getString(1)
+						+ " BTW the id is: " + Long.toString(id))).id(id)
+						.build();
 				Log.d("getAll", "got id: " + Long.toString(id));
 				cl.add(c);
 			} while (rows.moveToNext());
