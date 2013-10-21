@@ -18,19 +18,16 @@ public class EditOneContact extends Activity {
 
 	public static final String RESULT_WANTED_TO_VIEW = "I_want_to_view_this_contact";
 
-	private long id = -1;
+	private Contact c;
+	private DataStore ds;
 
 	/**
-	 * @deprecated
+	 * @deprecated unfinished.
 	 */
-	private void fillFields(Bundle extras) {
-		if (extras == null) {
-			Toast.makeText(this, "null bundle of extras", Toast.LENGTH_SHORT)
-					.show();
-		} else {
-			TextView v = (TextView) findViewById(R.id.personName);
-			v.setText(Long.toString(extras.getLong("id")));
-		}
+	private void updateUIElements(Contact contact) {
+		TextView v = (TextView) findViewById(R.id.personName);
+		v.setText(contact.getName().formattedName());
+		// TODO emails & phones too.
 	}
 
 	@SuppressWarnings("deprecation")
@@ -44,12 +41,20 @@ public class EditOneContact extends Activity {
 		Bundle extras = getIntent().getExtras();
 		// might be null - when creating new contact
 
-		fillFields(extras);
-
 		if (extras != null) {
-			id = extras.getLong(Contact.KEY_ID, -1);
-			// The "-1" is superfluous.
+			// we are editing an existing contact.
+
+			long id = extras.getLong(Contact.KEY_ID, -1);
+			// That key should always be in the extras! The -1 should never be
+			// needed!
+
+			ds = DataStoreFactory.getDataStore(this);
+			this.c = ds.get(id);
+		} else {
+			// we are editing a new contact.
 		}
+
+		updateUIElements(this.c);
 	}
 
 	/**
@@ -84,14 +89,13 @@ public class EditOneContact extends Activity {
 		case R.id.action_save:
 			Contact c = (new Contact.Builder(
 					((TextView) findViewById(R.id.personName)).getText()
-							.toString(),
-					((TextView) findViewById(R.id.primaryPhoneField)).getText()
-							.toString(),
-					((TextView) findViewById(R.id.primaryEmailField)).getText()
-							.toString())).id(id).build();
-			DataStore ds = DataStoreFactory
-					.getDataStore(getApplicationContext());
-			id = ds.put(c);
+							.toString())).build();
+			// TODO create the contact object properly: include multiple Phones,
+			// Emails
+
+			long id = ds.put(c);
+			// id == c.getId() != -1 ? c.getId() : the_new_id_from_the_ds
+
 			Intent result = new Intent();
 			Bundle b = new Bundle();
 			b.putLong(Contact.KEY_ID, id);
@@ -99,7 +103,8 @@ public class EditOneContact extends Activity {
 			setResult(RESULT_OK, result);
 			finish();
 			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 }
