@@ -10,13 +10,15 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.easoncxz.lxrm.backend.Contact;
+import com.easoncxz.lxrm.backend.DataStore;
+import com.easoncxz.lxrm.backend.DataStoreFactory;
 
 @SuppressWarnings("deprecation")
 public class ViewOneContact extends Activity {
 
-	public static final String RESULT_WANTED_TO_EDIT = "I want to edit this contact";
+	public static final String RESULT_WANTED_TO_EDIT = "I want to edit this c";
 
-	private long id = -1;
+	private Contact c;
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -30,11 +32,17 @@ public class ViewOneContact extends Activity {
 		setupActionBar();
 
 		Bundle extras = getIntent().getExtras();
-		id = extras.getLong(Contact.KEY_ID);
+		long id = extras.getLong(Contact.KEY_ID);
+		if (id != -1) {
+			DataStore ds = DataStoreFactory.getDataStore(this);
+			this.c = ds.get(id);
+		} else {
+			assert false : "Cannot view an unsaved contact";
+		}
 
-		// scaffolding
 		TextView v = (TextView) findViewById(R.id.personName);
-		v.setText(Long.toString(id));
+		v.setText(this.c.getName().formattedName());
+		// TODO fill in emails & phones
 	}
 
 	/**
@@ -71,7 +79,7 @@ public class ViewOneContact extends Activity {
 
 			Intent result = new Intent();
 			Bundle extras = new Bundle();
-			extras.putLong(Contact.KEY_ID, id);
+			extras.putLong(Contact.KEY_ID, this.c.getId());
 			result.putExtras(extras);
 
 			// startActivity(i, extras);
