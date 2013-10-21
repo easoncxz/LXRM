@@ -1,5 +1,7 @@
 package com.easoncxz.lxrm.storage;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +11,9 @@ import android.util.Log;
 
 import com.easoncxz.lxrm.models.Contact;
 import com.easoncxz.lxrm.models.ContactList;
+import com.easoncxz.lxrm.models.Email;
+import com.easoncxz.lxrm.models.Name;
+import com.easoncxz.lxrm.models.Phone;
 
 public class DBDataStore extends DataStore {
 
@@ -17,14 +22,33 @@ public class DBDataStore extends DataStore {
 		private static final String DATABASE_NAME = "DBDeMerde";
 		private static final int DATABASE_VERSION = 1;
 
+		// some column names are shared between different tables.
 		private static final String TABLE_CONTACTS = "contacts";
+		private static final String TABLE_PHONES = "phones";
+		private static final String TABLE_EMAILS = "emails";
 		private static final String COLUMN_ID = "_id";
+		private static final String COLUMN_OWNER_ID = "owner_id";
 		private static final String COLUMN_PERSON_NAME = "name";
+		private static final String COLUMN_TYPE = "type";
+		private static final String COLUMN_PHONE_NUMBER = "number";
+		private static final String COLUMN_EMAIL_ADDRESS = "address";
 
-		private static final String SQL_CREATE = "CREATE TABLE "
+		private static final String SQL_CREATE_CONTACTS_TABLE = "CREATE TABLE "
 				+ TABLE_CONTACTS + " (" + COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_PERSON_NAME
-				+ " TEXT);";
+				+ " TEXT NOT NULL); ";
+		private static final String SQL_CREATE_PHONES_TABLE = "CREATE TABLE "
+				+ TABLE_PHONES + " (" + COLUMN_ID
+				+ "INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_OWNER_ID
+				+ " INTEGER NOT NULL, " + COLUMN_TYPE + " TEXT NOT NULL, "
+				+ COLUMN_PHONE_NUMBER + " TEXT NOT NULL); ";
+		private static final String SQL_CREATE_EMAILS_TABLE = "CREATE TABLE "
+				+ TABLE_EMAILS + " (" + COLUMN_ID
+				+ "INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_OWNER_ID
+				+ " INTEGER NOT NULL, " + COLUMN_TYPE + " TEXT NOT NULL, "
+				+ COLUMN_EMAIL_ADDRESS + " TEXT NOT NULL); ";
+		private static final String SQL_CREATE = SQL_CREATE_CONTACTS_TABLE
+				+ SQL_CREATE_PHONES_TABLE + SQL_CREATE_EMAILS_TABLE;
 
 		public Helper(Context context) {
 			// see:
@@ -56,15 +80,23 @@ public class DBDataStore extends DataStore {
 	public long put(Contact contact) {
 		Log.d("DBDataStore", "this is DBDataStore#put");
 		SQLiteDatabase db = h.getWritableDatabase();
-		ContentValues cv = new ContentValues();
+
+		ContentValues contactValues = new ContentValues();
 		long id = contact.getId();
 
-		cv.put(Helper.COLUMN_PERSON_NAME, contact.getName().formattedName());
+		Name name = contact.getName();
+		List<Phone> phones = contact.getPhones();
+		List<Email> emails = contact.getEmails();
+		ContentValues phoneValues = new ContentValues();
+		ContentValues emailValues = new ContentValues();
+		contactValues.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
+
 		if (id == -1) {
-			id = db.insert(Helper.TABLE_CONTACTS, null, cv);
+
+			id = db.insert(Helper.TABLE_CONTACTS, null, contactValues);
 		} else {
-			cv.put(Helper.COLUMN_ID, id);
-			db.update(Helper.TABLE_CONTACTS, cv, Helper.COLUMN_ID + " == ?",
+			contactValues.put(Helper.COLUMN_ID, id);
+			db.update(Helper.TABLE_CONTACTS, contactValues, Helper.COLUMN_ID + " == ?",
 					new String[] { Long.toString(id) });
 		}
 		db.close();
