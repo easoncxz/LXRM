@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.easoncxz.lxrm.backend.Contact;
 import com.easoncxz.lxrm.backend.DataStore;
@@ -25,6 +25,9 @@ public class EditOneContact extends Activity {
 	 * @deprecated unfinished.
 	 */
 	private void updateUIElements(Contact contact) {
+		if (contact == null) {
+			throw new RuntimeException("Contact shouldn't be null");
+		}
 		TextView v = (TextView) findViewById(R.id.personName);
 		v.setText(contact.getName().formattedName());
 		// TODO emails & phones too.
@@ -37,6 +40,7 @@ public class EditOneContact extends Activity {
 		setContentView(R.layout.activity_new_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		ds = DataStoreFactory.getDataStore(this);
 
 		Bundle extras = getIntent().getExtras();
 		// might be null - when creating new contact
@@ -48,13 +52,14 @@ public class EditOneContact extends Activity {
 			// That key should always be in the extras! The -1 should never be
 			// needed!
 
-			ds = DataStoreFactory.getDataStore(this);
 			this.c = ds.get(id);
 		} else {
+			Log.d("EditOneContact",
+					"We know that the extras passed to us are null");
 			// we are editing a new contact.
 		}
 
-		updateUIElements(this.c);
+		updateUIElements(this.c); // cause problems due to c being null
 	}
 
 	/**

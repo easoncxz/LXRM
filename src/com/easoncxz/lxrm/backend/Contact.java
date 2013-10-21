@@ -22,7 +22,7 @@ public final class Contact {
 	 * Half for scaffolding purpose. Could be used as the key for avatar/notes
 	 * later.
 	 */
-	public static final String KEY_TAG = "useless_key";
+	// public static final String KEY_TAG = "useless_key";
 
 	/**
 	 * This class is made public only so that it can be used as a return type as
@@ -44,7 +44,10 @@ public final class Contact {
 		 */
 		public Name(String inputtedName) {
 			String[] parts = inputtedName.split("\\s+");
-			assert parts.length >= 0;
+			if (!(parts.length >= 0)) {
+				throw new RuntimeException(
+						"Error with the contact name. See Contact$Name#Name.");
+			}
 			if (parts.length == 0) {
 				firstName = "";
 				lastName = "";
@@ -55,7 +58,10 @@ public final class Contact {
 				firstName = parts[0];
 				lastName = parts[1];
 			} else {
-				assert parts.length > 2;
+				if (!(parts.length > 2)) {
+					throw new RuntimeException(
+							"Error with the contact name. See Contact$Name#Name.");
+				}
 				firstName = parts[0];
 				lastName = parts[parts.length - 1];
 				StringBuilder b = new StringBuilder();
@@ -232,7 +238,10 @@ public final class Contact {
 	 * Safely puts Phone objects with whatever id.
 	 */
 	public void putPhone(Phone phone) {
-		assert phone.id() < this.phones.size() : "The ID of your Phone object is larger than it should be.";
+		if (!(phone.id() < this.phones.size())) {
+			throw new RuntimeException(
+					"The ID of your Phone object is larger than it should be.");
+		}
 		List<Phone> oldList = this.phones;
 		List<Phone> newList;
 		if (phone.id() == -1) {
@@ -255,7 +264,10 @@ public final class Contact {
 	 * Safely puts Email objects with whatever id.
 	 */
 	public void putEmail(Email email) {
-		assert email.id() < this.emails.size() : "The ID of your Email object is larger than it should be.";
+		if (!(email.id() < this.emails.size())) {
+			throw new RuntimeException(
+					"The ID of your Email object is larger than it should be.");
+		}
 		List<Email> oldList = this.emails;
 		List<Email> newList;
 		if (email.id() == -1) {

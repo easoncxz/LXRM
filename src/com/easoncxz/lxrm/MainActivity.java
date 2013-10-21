@@ -91,6 +91,9 @@ public class MainActivity extends Activity {
 		// consider giving the ViewOneContactListener a name?:
 		populateListView(l, new ContactListAdapter(this, cl),
 				new ViewOneContactListener());
+
+		// problem: this method is called every time user switches between
+		// EditOneContact and ViewOneContact, which causes lag.
 	}
 
 	@Override
@@ -106,6 +109,8 @@ public class MainActivity extends Activity {
 		case R.id.action_add_contact: {
 			Intent i = new Intent(this, EditOneContact.class);
 			// the "extras" for Intent i is a null!
+			Log.d("MainActivity",
+					"Attemping to start EditOneContact from MainActivity");
 			startActivityForResult(i, REQUEST_EDIT);
 			return true;
 		}
@@ -126,8 +131,12 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_VIEW) {
 			if (resultCode == RESULT_OK) {
-				Intent i = new Intent(this, EditOneContact.class);
-				i.putExtras(data);
+				long id = data.getLongExtra(Contact.KEY_ID, -1);
+				Log.d("MainActivity",
+						"id of contact to edit is: " + Long.toString(id));
+				Intent i = new Intent(MainActivity.this, EditOneContact.class);
+				Log.d("MainActivity", "Created an intent");
+
 				startActivityForResult(i, REQUEST_EDIT);
 			}
 		} else if (requestCode == REQUEST_EDIT) {

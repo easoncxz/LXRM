@@ -37,7 +37,7 @@ public class ViewOneContact extends Activity {
 			DataStore ds = DataStoreFactory.getDataStore(this);
 			this.c = ds.get(id);
 		} else {
-			assert false : "Cannot view an unsaved contact";
+			throw new RuntimeException("Cannot view an unsaved contact");
 		}
 
 		TextView v = (TextView) findViewById(R.id.personName);

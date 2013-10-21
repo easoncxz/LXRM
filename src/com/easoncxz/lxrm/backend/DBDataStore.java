@@ -56,11 +56,12 @@ public class DBDataStore extends DataStore {
 	@SuppressWarnings("deprecation")
 	@Override
 	public long put(Contact contact) {
+		Log.d("DBDataStore", "this is DBDataStore#put");
 		SQLiteDatabase db = h.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		long id = contact.getId();
 
-		cv.put(Contact.KEY_TAG, contact.getName().formattedName());
+		cv.put(Helper.COLUMN_TAG, contact.getName().formattedName());
 		if (id == -1) {
 			id = db.insert(Helper.TABLE_CONTACTS, null, cv);
 		} else {
@@ -108,7 +109,7 @@ public class DBDataStore extends DataStore {
 				Contact c = (new Contact.Builder(rows.getString(1)
 						+ " BTW the id is: " + Long.toString(id))).id(id)
 						.build();
-				Log.d("getAll", "got id: " + Long.toString(id));
+				Log.d("DBDataStore#getAll", "got id: " + Long.toString(id));
 				cl.add(c);
 			} while (rows.moveToNext());
 		}
