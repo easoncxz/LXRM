@@ -26,11 +26,13 @@ public class EditOneContact extends Activity {
 	 */
 	private void updateUIElements(Contact contact) {
 		if (contact == null) {
-			throw new RuntimeException("Contact shouldn't be null");
+			// do nothing, or
+			// throw new RuntimeException("Contact shouldn't be null");
+		} else {
+			TextView v = (TextView) findViewById(R.id.personName);
+			v.setText(contact.getName().formattedName());
+			// TODO emails & phones too.
 		}
-		TextView v = (TextView) findViewById(R.id.personName);
-		v.setText(contact.getName().formattedName());
-		// TODO emails & phones too.
 	}
 
 	@SuppressWarnings("deprecation")
@@ -59,7 +61,7 @@ public class EditOneContact extends Activity {
 			// we are editing a new contact.
 		}
 
-		updateUIElements(this.c); // cause problems due to c being null
+		updateUIElements(this.c);
 	}
 
 	/**
