@@ -57,10 +57,12 @@ public class EditOneContact extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("EditOneContact#onCreate", "entered onCreate");
 		setContentView(R.layout.activity_edit_one_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
 		ds = DataStoreFactory.getDataStore(this);
+		Log.d("EditOneContact#onCreate", "got DataStore");
 
 		Bundle extras = getIntent().getExtras();
 		// might be null - when creating new contact

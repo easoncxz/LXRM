@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("MainActivity", "onCreate()");
 		setContentView(R.layout.activity_main);
 
 		l = (ListView) findViewById(R.id.list_of_contacts);
@@ -86,6 +87,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		Log.d("MainActivity", "onStart()");
 		cl = ds.getAll(); // dynamically loads latest data
 
 		// consider giving the ViewOneContactListener a name?:
