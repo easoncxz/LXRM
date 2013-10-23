@@ -2,6 +2,7 @@ package com.easoncxz.lxrm.storage;
 
 import android.content.Context;
 
+import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
 import com.easoncxz.lxrm.models.ContactList;
 
@@ -34,6 +35,12 @@ public class FakeDataStore extends DataStore {
 	public Contact get(long id) {
 		// TODO Auto-generated method stub
 		return new Contact.Builder("John 4 Doe").id(99).build();
+	}
+
+	@Override
+	public boolean delete(long id) throws ContactNotFoundException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

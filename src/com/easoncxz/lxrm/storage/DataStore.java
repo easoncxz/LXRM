@@ -9,6 +9,7 @@ import com.easoncxz.lxrm.models.ContactList;
 /**
  * An simple interface for accessing storage provided to the logic layer.
  */
+@SuppressWarnings("deprecation")
 public abstract class DataStore {
 
 	Context context;
@@ -16,24 +17,6 @@ public abstract class DataStore {
 	public DataStore(Context context) {
 		this.context = context;
 	}
-
-	/**
-	 * @return a list of all contacts stored in this data store.
-	 */
-	public abstract ContactList getAll();
-
-	/**
-	 * Retrieve a Contact object stored in this data store, according to id.
-	 * <p>
-	 * Exceptions about not finding a contact with the given id (or rather,
-	 * finding multiple contacts) is yet to be dealt with.
-	 * 
-	 * @param id
-	 * @return <i>the</i> contact in this data store with the given id.
-	 * @throws ContactNotFoundException 
-	 */
-	@SuppressWarnings("deprecation")
-	public abstract Contact get(long id) throws ContactNotFoundException;
 
 	/**
 	 * Store the given Contact object into this data store. Where to store
@@ -49,7 +32,32 @@ public abstract class DataStore {
 	 * @param contact
 	 * @return the id of where the given contact is put.
 	 */
-	@SuppressWarnings("deprecation")
 	public abstract long put(Contact contact);
+
+	/**
+	 * Retrieve a Contact object stored in this data store, according to id.
+	 * <p>
+	 * Exceptions about not finding a contact with the given id (or rather,
+	 * finding multiple contacts) is yet to be dealt with.
+	 * 
+	 * @param id
+	 * @return <i>the</i> contact in this data store with the given id.
+	 * @throws ContactNotFoundException
+	 */
+	public abstract Contact get(long id) throws ContactNotFoundException;
+
+	/**
+	 * Deletes the contact stored in here with the given id.
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ContactNotFoundException
+	 */
+	public abstract boolean delete(long id) throws ContactNotFoundException;
+
+	/**
+	 * @return a list of all contacts stored in this data store.
+	 */
+	public abstract ContactList getAll();
 
 }
