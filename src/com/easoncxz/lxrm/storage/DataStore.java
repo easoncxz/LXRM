@@ -2,6 +2,7 @@ package com.easoncxz.lxrm.storage;
 
 import android.content.Context;
 
+import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
 import com.easoncxz.lxrm.models.ContactList;
 
@@ -29,9 +30,10 @@ public abstract class DataStore {
 	 * 
 	 * @param id
 	 * @return <i>the</i> contact in this data store with the given id.
+	 * @throws ContactNotFoundException 
 	 */
 	@SuppressWarnings("deprecation")
-	public abstract Contact get(long id);
+	public abstract Contact get(long id) throws ContactNotFoundException;
 
 	/**
 	 * Store the given Contact object into this data store. Where to store

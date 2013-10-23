@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
 import com.easoncxz.lxrm.models.ContactList;
 import com.easoncxz.lxrm.models.Email;
@@ -80,24 +81,31 @@ public class DBDataStore extends DataStore {
 	public long put(Contact contact) {
 		Log.d("DBDataStore", "this is DBDataStore#put");
 		SQLiteDatabase db = h.getWritableDatabase();
-
-		ContentValues contactValues = new ContentValues();
 		long id = contact.getId();
-
-		Name name = contact.getName();
-		List<Phone> phones = contact.getPhones();
-		List<Email> emails = contact.getEmails();
-		ContentValues phoneValues = new ContentValues();
-		ContentValues emailValues = new ContentValues();
-		contactValues.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
-
 		if (id == -1) {
+			// We are creating a new contact.
+			// Into all tables, we should be inserting.
 
+			// TODO
+			Name name = contact.getName();
+			ContentValues contactValues = new ContentValues();
+			contactValues.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
 			id = db.insert(Helper.TABLE_CONTACTS, null, contactValues);
+
+			List<Phone> phones = contact.getPhones();
+			List<Email> emails = contact.getEmails();
+			ContentValues phoneValues = new ContentValues();
+			ContentValues emailValues = new ContentValues();
 		} else {
+			// We are editing an existing contact.
+			// However, it is still possible that new Phone/Email entries are
+			// created.
+
+			// TODO
+			ContentValues contactValues = new ContentValues();
 			contactValues.put(Helper.COLUMN_ID, id);
-			db.update(Helper.TABLE_CONTACTS, contactValues, Helper.COLUMN_ID + " == ?",
-					new String[] { Long.toString(id) });
+			db.update(Helper.TABLE_CONTACTS, contactValues, Helper.COLUMN_ID
+					+ " == ?", new String[] { Long.toString(id) });
 		}
 		db.close();
 		return id;
@@ -105,7 +113,7 @@ public class DBDataStore extends DataStore {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Contact get(long id) {
+	public Contact get(long id) throws ContactNotFoundException {
 		Log.d("DBDataStore", "this is DBDataStore#get");
 		SQLiteDatabase db = h.getReadableDatabase();
 		// ContentValues cv = new ContentValues();
@@ -118,7 +126,7 @@ public class DBDataStore extends DataStore {
 			throw new RuntimeException(
 					"Error!! Found more than 1 contact with the same ID?!");
 		} else if (cursor.getCount() < 1) {
-			throw new RuntimeException("No contact with that id found");
+			throw new ContactNotFoundException("No contact with that id found");
 			// TODO change this to a checked exception.
 		} else if (cursor.getCount() == 1) {
 			contact = (new Contact.Builder(Long.toString(id))).id(id).build();
@@ -131,21 +139,20 @@ public class DBDataStore extends DataStore {
 	public ContactList getAll() {
 		Log.d("DBDataStore#getAll", "entering method");
 		SQLiteDatabase db = h.getReadableDatabase();
-		Cursor rows = db.query(Helper.TABLE_CONTACTS, new String[] {
+		Cursor contacts = db.query(Helper.TABLE_CONTACTS, new String[] {
 				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, null, null,
 				null, null, null);
 		ContactList cl = new ContactList();
-		if (rows.moveToFirst()) {
+		if (contacts.moveToFirst()) {
 			do {
-				long id = rows.getLong(0);
-				Contact c = (new Contact.Builder(rows.getString(1)
-						+ " BTW the id is: " + Long.toString(id))).id(id)
+				long id = contacts.getLong(0);
+				Contact c = (new Contact.Builder(contacts.getString(contacts
+						.getColumnIndex(Helper.COLUMN_PERSON_NAME)))).id(id)
 						.build();
 				cl.add(c);
-			} while (rows.moveToNext());
+			} while (contacts.moveToNext());
 		}
 		db.close();
 		return cl;
 	}
-
 }

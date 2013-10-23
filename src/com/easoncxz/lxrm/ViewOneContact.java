@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
 import com.easoncxz.lxrm.storage.DataStore;
 import com.easoncxz.lxrm.storage.DataStoreFactory;
@@ -40,7 +41,12 @@ public class ViewOneContact extends Activity {
 		long id = extras.getLong(Contact.KEY_ID);
 		if (id != -1) {
 			DataStore ds = DataStoreFactory.getDataStore(this);
-			this.c = ds.get(id);
+			try {
+				this.c = ds.get(id);
+			} catch (ContactNotFoundException e) {
+				Contact.Builder b = new Contact.Builder("Contact not found");
+				this.c = b.build();
+			}
 		} else {
 			throw new RuntimeException("Cannot view an unsaved contact");
 		}

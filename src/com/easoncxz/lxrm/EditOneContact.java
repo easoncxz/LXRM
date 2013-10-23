@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
 import com.easoncxz.lxrm.models.Name;
 import com.easoncxz.lxrm.storage.DataStore;
@@ -71,7 +72,11 @@ public class EditOneContact extends Activity {
 			// That key should always be in the extras! The -1 should never be
 			// needed!
 
-			this.c = ds.get(id);
+			try {
+				this.c = ds.get(id);
+			} catch (ContactNotFoundException e) {
+				this.c = (new Contact.Builder("Contact not found")).build();
+			}
 		} else {
 			Log.d("EditOneContact",
 					"We know that the extras passed to us are null");
