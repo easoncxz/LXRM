@@ -30,7 +30,7 @@ public class Email {
 		return type;
 	}
 
-	public String number() {
+	public String address() {
 		return address;
 	}
 

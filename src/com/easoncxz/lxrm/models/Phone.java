@@ -1,5 +1,7 @@
 package com.easoncxz.lxrm.models;
 
+import java.util.Comparator;
+
 /**
  * This class is made public only so that it can be used as a return type as
  * public methods of Contact.
@@ -32,6 +34,15 @@ public class Phone {
 
 	public String number() {
 		return number;
+	}
+
+	public static class IDComparator implements Comparator<Phone> {
+
+		@Override
+		public int compare(Phone lhs, Phone rhs) {
+			return Long.valueOf(lhs.id).compareTo(Long.valueOf(rhs.id));
+		}
+
 	}
 
 }
