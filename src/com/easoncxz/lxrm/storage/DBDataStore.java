@@ -1,5 +1,6 @@
 package com.easoncxz.lxrm.storage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -16,6 +17,7 @@ import com.easoncxz.lxrm.models.Email;
 import com.easoncxz.lxrm.models.Name;
 import com.easoncxz.lxrm.models.Phone;
 
+@SuppressWarnings("deprecation")
 public class DBDataStore extends DataStore {
 
 	private class Helper extends SQLiteOpenHelper {
@@ -65,6 +67,11 @@ public class DBDataStore extends DataStore {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			// don't know what to do here.
+			// db.execSQL("DROP TABLE IF EXISTS " + Helper.TABLE_CONTACTS +
+			// ";");
+			// db.execSQL("DROP TABLE IF EXISTS " + Helper.TABLE_PHONES + ";");
+			// db.execSQL("DROP TABLE IF EXISTS " + Helper.TABLE_EMAILS + ";");
+			// this.onCreate(db);
 		}
 
 	}
@@ -76,83 +83,346 @@ public class DBDataStore extends DataStore {
 		this.h = new Helper(context);
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * @see DataStore#put(Contact)
+	 * @param contact
+	 * @return
+	 */
 	@Override
 	public long put(Contact contact) {
 		Log.d("DBDataStore", "this is DBDataStore#put");
 		SQLiteDatabase db = h.getWritableDatabase();
-		long id = contact.getId();
-		if (id == -1) {
-			// We are creating a new contact.
-			// Into all tables, we should be inserting.
-
-			// TODO
-			Name name = contact.getName();
-			ContentValues contactValues = new ContentValues();
-			contactValues.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
-			id = db.insert(Helper.TABLE_CONTACTS, null, contactValues);
-
-			List<Phone> phones = contact.getPhones();
-			List<Email> emails = contact.getEmails();
-			ContentValues phoneValues = new ContentValues();
-			ContentValues emailValues = new ContentValues();
+		long contactId = contact.getId();
+		if (contactId == -1) {
+			contactId = this.createNewContact(contact, db);
 		} else {
-			// We are editing an existing contact.
-			// However, it is still possible that new Phone/Email entries are
-			// created.
-
-			// TODO
-			ContentValues contactValues = new ContentValues();
-			contactValues.put(Helper.COLUMN_ID, id);
-			db.update(Helper.TABLE_CONTACTS, contactValues, Helper.COLUMN_ID
-					+ " == ?", new String[] { Long.toString(id) });
+			this.updateExistingContact(contact, db);
 		}
 		db.close();
-		return id;
+		return contactId;
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * This method is used by {@link DBDataStore#put(Contact)}
+	 * 
+	 * @param contact
+	 * @param db
+	 */
+	private long createNewContact(Contact contact, SQLiteDatabase db) {
+		// We are creating a new contact.
+		// Into all tables, we should be inserting.
+		long contactId = contact.getId();
+		if (contactId != -1) {
+			throw new RuntimeException(
+					"Attempting to create new contact, but the contact received by the DB doesn't seem new.");
+		}
+
+		Name name = contact.getName();
+		{
+			ContentValues cv = new ContentValues();
+			cv.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
+			// Storing `Name.formattedName` to be parsed as inputtedName
+			// later.
+			contactId = db.insert(Helper.TABLE_CONTACTS, null, cv);
+			// Notice that id is being defined here.
+			// This block must be before the phone & emails blocks.
+		}
+
+		List<Phone> phones = contact.getPhones();
+		for (Phone p : phones) {
+			ContentValues cv = new ContentValues();
+			cv.put(Helper.COLUMN_OWNER_ID, contactId);
+			cv.put(Helper.COLUMN_TYPE, p.type());
+			cv.put(Helper.COLUMN_PHONE_NUMBER, p.number());
+			db.insert(Helper.TABLE_PHONES, null, cv);
+		}
+
+		List<Email> emails = contact.getEmails();
+		for (Email e : emails) {
+			ContentValues cv = new ContentValues();
+			cv.put(Helper.COLUMN_OWNER_ID, contactId);
+			cv.put(Helper.COLUMN_TYPE, e.type());
+			cv.put(Helper.COLUMN_EMAIL_ADDRESS, e.address());
+			db.insert(Helper.TABLE_EMAILS, null, cv);
+		}
+
+		return contactId;
+	}
+
+	/**
+	 * This method is used by {@link DBDataStore#put(Contact)}.
+	 * 
+	 * @param contact
+	 * @param db
+	 */
+	private void updateExistingContact(Contact contact, SQLiteDatabase db) {
+		// We are editing an existing contact.
+		// However, it is still possible that new Phone/Email entries are
+		// created.
+		long contactId = contact.getId();
+		{
+			Name name = contact.getName();
+			ContentValues cv = new ContentValues();
+			cv.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
+			// Storing `Name.formattedName` to be parsed as inputtedName
+			// later.
+			db.update(Helper.TABLE_CONTACTS, cv, Helper.COLUMN_ID + " == ?",
+					new String[] { Long.toString(contactId) });
+		}
+
+		this.diffPhones(contact, db);
+
+		this.diffEmails(contact, db);
+
+	}
+
+	/**
+	 * This method is used by
+	 * {@link DBDataStore#updateExistingContact(Contact, SQLiteDatabase)}
+	 * 
+	 * @param contact
+	 * @param db
+	 * @param contactId
+	 */
+	private void diffPhones(Contact contact, SQLiteDatabase db) {
+		long contactId = contact.getId();
+		List<Phone> oldPhones = this.getOldPhoneList(contactId, db);
+		List<Phone> newPhones = contact.getPhones();
+
+		// create new (if any)
+		for (Phone newPhone : newPhones) {
+			if (newPhone.id() == -1) {
+				this.createNewPhone(newPhone, contactId, db);
+			}
+		}
+
+		// update and delete (if any)
+		for (Phone oldPhone : oldPhones) {
+			boolean thisPhoneShouldBeDeleted = true;
+			for (Phone newPhone : newPhones) {
+				if (newPhone.id() == oldPhone.id()) {
+					this.updateExistingPhone(newPhone, contactId,
+							oldPhone.id(), db);
+					thisPhoneShouldBeDeleted = false;
+					break;
+				}
+			}
+			if (thisPhoneShouldBeDeleted) {
+				this.deleteExistingPhone(oldPhone.id(), db);
+			}
+		}
+
+	}
+
+	private void diffEmails(Contact contact, SQLiteDatabase db) {
+		long contactId = contact.getId();
+		List<Email> oldEmails = this.getOldEmailList(contactId, db);
+		List<Email> newEmails = contact.getEmails();
+
+		// create new (if any)
+		for (Email newEmail : newEmails) {
+			if (newEmail.id() == -1) {
+				this.createNewEmail(newEmail, contactId, db);
+			}
+		}
+
+		// update and delete (if any)
+		for (Email oldEmail : oldEmails) {
+			boolean thisEmailShouldBeDeleted = true;
+			for (Email newEmail : newEmails) {
+				if (newEmail.id() == oldEmail.id()) {
+					this.updateExistingEmail(newEmail, contactId,
+							oldEmail.id(), db);
+					thisEmailShouldBeDeleted = false;
+					break;
+				}
+			}
+			if (thisEmailShouldBeDeleted) {
+				this.deleteExistingEmail(oldEmail.id(), db);
+			}
+		}
+	}
+
+	/**
+	 * This method is used by
+	 * {@link DBDataStore#diffPhones(Contact, SQLiteDatabase, long)}
+	 * 
+	 * @param db
+	 * @param contactId
+	 * @return
+	 */
+	private List<Phone> getOldPhoneList(long contactId, SQLiteDatabase db) {
+		List<Phone> oldPhones = new ArrayList<Phone>();
+		Cursor c = db.query(Helper.TABLE_PHONES, new String[] {
+				Helper.COLUMN_ID, Helper.COLUMN_OWNER_ID, Helper.COLUMN_TYPE,
+				Helper.COLUMN_PHONE_NUMBER }, Helper.COLUMN_OWNER_ID + " == ?",
+				new String[] { Long.toString(contactId) }, null, null, null,
+				null);
+		if (c.moveToFirst()) {
+			do {
+				long phoneId = c.getLong(c
+						.getColumnIndex(Helper.COLUMN_OWNER_ID));
+				String type = c.getString(c.getColumnIndex(Helper.COLUMN_TYPE));
+				String number = c.getString(c
+						.getColumnIndex(Helper.COLUMN_PHONE_NUMBER));
+				oldPhones.add(new Phone(phoneId, type, number));
+			} while (c.moveToNext());
+		}
+		return oldPhones;
+	}
+
+	private List<Email> getOldEmailList(long contactId, SQLiteDatabase db) {
+		List<Email> oldEmails = new ArrayList<Email>();
+		Cursor c = db.query(Helper.TABLE_EMAILS, new String[] {
+				Helper.COLUMN_ID, Helper.COLUMN_OWNER_ID, Helper.COLUMN_TYPE,
+				Helper.COLUMN_EMAIL_ADDRESS },
+				Helper.COLUMN_OWNER_ID + " == ?",
+				new String[] { Long.toString(contactId) }, null, null, null,
+				null);
+		if (c.moveToFirst()) {
+			do {
+				long emailId = c.getLong(c
+						.getColumnIndex(Helper.COLUMN_OWNER_ID));
+				String type = c.getString(c.getColumnIndex(Helper.COLUMN_TYPE));
+				String address = c.getString(c
+						.getColumnIndex(Helper.COLUMN_EMAIL_ADDRESS));
+				oldEmails.add(new Email(emailId, type, address));
+			} while (c.moveToNext());
+		}
+		return oldEmails;
+	}
+
+	/**
+	 * This method is used by
+	 * {@link DBDataStore#diffPhones(Contact, SQLiteDatabase, long)}
+	 * 
+	 * @param newPhone
+	 */
+	private long createNewPhone(Phone newPhone, long contactId,
+			SQLiteDatabase db) {
+		ContentValues cv = new ContentValues();
+		cv.put(Helper.COLUMN_ID, newPhone.id());
+		cv.put(Helper.COLUMN_OWNER_ID, contactId);
+		cv.put(Helper.COLUMN_TYPE, newPhone.type());
+		cv.put(Helper.COLUMN_PHONE_NUMBER, newPhone.number());
+		return db.insert(Helper.TABLE_PHONES, null, cv);
+	}
+
+	private long createNewEmail(Email newEmail, long contactId,
+			SQLiteDatabase db) {
+		ContentValues cv = new ContentValues();
+		cv.put(Helper.COLUMN_ID, newEmail.id());
+		cv.put(Helper.COLUMN_OWNER_ID, contactId);
+		cv.put(Helper.COLUMN_TYPE, newEmail.type());
+		cv.put(Helper.COLUMN_EMAIL_ADDRESS, newEmail.address());
+		return db.insert(Helper.TABLE_EMAILS, null, cv);
+	}
+
+	/**
+	 * This method is used by
+	 * {@link DBDataStore#diffPhones(Contact, SQLiteDatabase, long)}
+	 * 
+	 * @param newPhone
+	 * @param oldPhone
+	 * @return
+	 */
+	private int updateExistingPhone(Phone newPhone, long contactId,
+			long oldPhoneId, SQLiteDatabase db) {
+		ContentValues cv = new ContentValues();
+		cv.put(Helper.COLUMN_ID, oldPhoneId);
+		cv.put(Helper.COLUMN_OWNER_ID, contactId);
+		cv.put(Helper.COLUMN_TYPE, newPhone.type());
+		cv.put(Helper.COLUMN_PHONE_NUMBER, newPhone.number());
+		return db.update(Helper.TABLE_PHONES, cv, Helper.COLUMN_ID + " == ?",
+				new String[] { Long.toString(oldPhoneId) });
+	}
+
+	private long updateExistingEmail(Email newEmail, long contactId,
+			long oldEmailId, SQLiteDatabase db) {
+		ContentValues cv = new ContentValues();
+		cv.put(Helper.COLUMN_ID, oldEmailId);
+		cv.put(Helper.COLUMN_OWNER_ID, contactId);
+		cv.put(Helper.COLUMN_TYPE, newEmail.type());
+		cv.put(Helper.COLUMN_EMAIL_ADDRESS, newEmail.address());
+		return db.update(Helper.TABLE_EMAILS, cv, Helper.COLUMN_ID + " == ?",
+				new String[] { Long.toString(oldEmailId) });
+	}
+
+	/**
+	 * This method is used by
+	 * {@link DBDataStore#diffPhones(Contact, SQLiteDatabase, long)}
+	 * 
+	 * @param oldPhone
+	 * @return
+	 */
+	private int deleteExistingPhone(long oldId, SQLiteDatabase db) {
+		return db.delete(Helper.TABLE_PHONES, Helper.COLUMN_ID + " == ?",
+				new String[] { Long.toString(oldId) });
+	}
+
+	private int deleteExistingEmail(long oldId, SQLiteDatabase db) {
+		return db.delete(Helper.TABLE_EMAILS, Helper.COLUMN_ID + " == ?",
+				new String[] { Long.toString(oldId) });
+	}
+
 	@Override
 	public Contact get(long id) throws ContactNotFoundException {
 		Log.d("DBDataStore", "this is DBDataStore#get");
 		SQLiteDatabase db = h.getReadableDatabase();
-		// ContentValues cv = new ContentValues();
-		// cv.put(Helper.COLUMN_ID, id);
-		Cursor cursor = db.query(Helper.TABLE_CONTACTS,
-				new String[] { Helper.COLUMN_ID }, Helper.COLUMN_ID + "== ?",
-				new String[] { Long.toString(id) }, null, null, null, null);
-		Contact contact = null; // sometimes will be returned while being null.
+		Cursor cursor = db.query(Helper.TABLE_CONTACTS, new String[] {
+				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, Helper.COLUMN_ID
+				+ "== ?", new String[] { Long.toString(id) }, null, null, null,
+				null);
+		Contact contact;
 		if (cursor.getCount() > 1) {
 			throw new RuntimeException(
 					"Error!! Found more than 1 contact with the same ID?!");
 		} else if (cursor.getCount() < 1) {
 			throw new ContactNotFoundException("No contact with that id found");
-			// TODO change this to a checked exception.
-		} else if (cursor.getCount() == 1) {
-			contact = (new Contact.Builder(Long.toString(id))).id(id).build();
+		} else {
+			// We know that: cursor.getCount() == 1
+			contact = this.buildContact(cursor.getString(cursor
+					.getColumnIndex(Helper.COLUMN_PERSON_NAME)), id, db);
 		}
 		return contact;
 	}
 
-	@SuppressWarnings("deprecation")
+	private Contact buildContact(String name, long id, SQLiteDatabase db) {
+		Contact contact = (new Contact.Builder(name)).id(id).build();
+		for (Phone p : this.getOldPhoneList(contact.getId(), db)) {
+			contact.putPhone(p);
+		}
+		for (Email e : this.getOldEmailList(contact.getId(), db)) {
+			contact.putEmail(e);
+		}
+		return contact;
+	}
+
 	@Override
 	public ContactList getAll() {
 		Log.d("DBDataStore#getAll", "entering method");
 		SQLiteDatabase db = h.getReadableDatabase();
-		Cursor contacts = db.query(Helper.TABLE_CONTACTS, new String[] {
+		Cursor cursor = db.query(Helper.TABLE_CONTACTS, new String[] {
 				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, null, null,
 				null, null, null);
 		ContactList cl = new ContactList();
-		if (contacts.moveToFirst()) {
+		if (cursor.moveToFirst()) {
 			do {
-				long id = contacts.getLong(0);
-				Contact c = (new Contact.Builder(contacts.getString(contacts
-						.getColumnIndex(Helper.COLUMN_PERSON_NAME)))).id(id)
-						.build();
+				String name = cursor.getString(cursor
+						.getColumnIndex(Helper.COLUMN_PERSON_NAME));
+				long id = cursor.getLong(cursor
+						.getColumnIndex(Helper.COLUMN_ID));
+				Contact c = this.buildContact(name, id, db);
 				cl.add(c);
-			} while (contacts.moveToNext());
+			} while (cursor.moveToNext());
 		}
 		db.close();
 		return cl;
+	}
+
+	@Override
+	public boolean delete(long id) throws ContactNotFoundException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
