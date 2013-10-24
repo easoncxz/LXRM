@@ -14,11 +14,11 @@
         android:title="@string/action_add"/>
     
     <item 
-        android:id="@+id/action_search_contact_list"
+        android:id="@+id/action_sort"
         android:icon="@drawable/ic_action_sort_by_size"
         android:orderInCategory="80"
         android:showAsAction="always"
-        android:title="@string/action_search_contact_list"
+        android:title="@string/action_sort"
         />
 
 </menu>

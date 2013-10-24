@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
 
 	private ListView l;
 	private ContactList cl;
+	private ContactListAdapter la;
 	private DataStore ds;
 
 	/**
@@ -89,10 +90,10 @@ public class MainActivity extends Activity {
 		super.onStart();
 		Log.v("MainActivity", "onStart()");
 		cl = ds.getAll(); // dynamically loads latest data
+		la = new ContactListAdapter(this, cl);
 
 		// consider giving the ViewOneContactListener a name?:
-		populateListView(l, new ContactListAdapter(this, cl),
-				new ViewOneContactListener());
+		populateListView(l, la, new ViewOneContactListener());
 
 		// problem: this method is called every time user switches between
 		// EditOneContact and ViewOneContact, which causes lag.
@@ -116,9 +117,11 @@ public class MainActivity extends Activity {
 			startActivityForResult(i, REQUEST_EDIT);
 			return true;
 		}
-		case R.id.action_search_contact_list:
-			Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
-					.show();
+		case R.id.action_sort:
+			// Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
+			// .show();
+			this.cl.sort();
+			this.la.notifyDataSetChanged();
 			return true;
 		case R.id.action_settings:
 			Toast.makeText(this, "settings btn clicked", Toast.LENGTH_SHORT)
