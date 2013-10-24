@@ -22,10 +22,11 @@
 
     <ImageButton
         android:id="@+id/email_delete"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/action_delete"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_action_discard_dark" />
+        android:src="@drawable/ic_action_cancel" />
 
 </LinearLayout>
