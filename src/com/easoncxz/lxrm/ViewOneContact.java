@@ -64,7 +64,7 @@ public class ViewOneContact extends Activity {
 			LinearLayout phonesLayout, LayoutInflater inflater) {
 		for (Phone p : phones) {
 			LinearLayout row = (LinearLayout) inflater.inflate(
-					R.layout.phone_label, null);
+					R.layout.item_phone_label, null);
 			TextView type = (TextView) row.findViewById(R.id.phone_type_label);
 			TextView number = (TextView) row
 					.findViewById(R.id.phone_number_label);
@@ -78,7 +78,7 @@ public class ViewOneContact extends Activity {
 			LinearLayout emailsLayout, LayoutInflater inflater) {
 		for (Email e : emails) {
 			LinearLayout row = (LinearLayout) inflater.inflate(
-					R.layout.phone_label, null);
+					R.layout.item_phone_label, null);
 			TextView type = (TextView) row.findViewById(R.id.phone_type_label);
 			TextView number = (TextView) row
 					.findViewById(R.id.phone_number_label);

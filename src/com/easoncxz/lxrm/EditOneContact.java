@@ -69,7 +69,7 @@ public class EditOneContact extends Activity {
 			@Override
 			public void onClick(View v) {
 				LinearLayout row = (LinearLayout) inflater.inflate(
-						R.layout.phone_field, null);
+						R.layout.item_phone_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
 				phoneRows.add(row);
@@ -80,7 +80,7 @@ public class EditOneContact extends Activity {
 			@Override
 			public void onClick(View v) {
 				LinearLayout row = (LinearLayout) inflater.inflate(
-						R.layout.email_field, null);
+						R.layout.item_email_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
 				emailRows.add(row);
@@ -161,7 +161,7 @@ public class EditOneContact extends Activity {
 		List<Phone> phones = c.getPhones();
 		for (Phone p : phones) {
 			LinearLayout row = (LinearLayout) inflater.inflate(
-					R.layout.phone_field, null);
+					R.layout.item_phone_field, null);
 			row.setTag(Integer.valueOf(Long.toString(p.id())));
 			EditText type = (EditText) row.findViewById(R.id.phone_type_field);
 			EditText number = (EditText) row
@@ -183,7 +183,7 @@ public class EditOneContact extends Activity {
 		List<Email> emails = c.getEmails();
 		for (Email e : emails) {
 			LinearLayout row = (LinearLayout) inflater.inflate(
-					R.layout.email_field, null);
+					R.layout.item_email_field, null);
 			row.setTag(Integer.valueOf(Long.toString(e.id())));
 			EditText type = (EditText) row.findViewById(R.id.email_type_field);
 			EditText address = (EditText) row
