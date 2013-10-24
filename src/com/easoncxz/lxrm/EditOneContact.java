@@ -74,7 +74,8 @@ public class EditOneContact extends Activity {
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
 
-				// EditOneContact.this.prepareButtonInRow(row);
+				EditOneContact.this.prepareButtonInPhoneRow(row,
+						EditOneContact.this.c);
 				phoneRows.add(row);
 				phoneVerticalLinearLayout.addView(row);
 			}
@@ -95,12 +96,34 @@ public class EditOneContact extends Activity {
 		});
 	}
 
-	// private class DeletePhoneistener implements OnClickListener {
-	// @Override
-	// public void onClick(View v) {
-	//
-	// }
-	// }
+	private void prepareButtonInPhoneRow(LinearLayout row, Contact c2) {
+		ImageButton button = (ImageButton) row.findViewById(R.id.phone_delete);
+		button.setOnClickListener(new DeletePhoneListener(c));
+	}
+
+	private void prepareButtonInEmailRow(LinearLayout row, Contact c) {
+		ImageButton button = (ImageButton) row.findViewById(R.id.email_delete);
+		button.setOnClickListener(new DeleteEmailListener(c));
+	}
+
+	private class DeletePhoneListener implements OnClickListener {
+
+		private Contact c;
+
+		private DeletePhoneListener(Contact c) {
+			this.c = c;
+		}
+
+		@Override
+		public void onClick(View v) {
+			LinearLayout row = (LinearLayout) v.getParent();
+			long phoneId = Long
+					.valueOf(Integer.toString((Integer) row.getTag()));
+			c.removePhone(phoneId);
+			ViewGroup parent = (ViewGroup) row.getParent();
+			parent.removeView(row);
+		}
+	}
 
 	private class DeleteEmailListener implements OnClickListener {
 
@@ -119,11 +142,6 @@ public class EditOneContact extends Activity {
 			ViewGroup parent = (ViewGroup) row.getParent();
 			parent.removeView(row);
 		}
-	}
-
-	private void prepareButtonInEmailRow(LinearLayout row, Contact c) {
-		ImageButton button = (ImageButton) row.findViewById(R.id.email_delete);
-		button.setOnClickListener(new DeleteEmailListener(c));
 	}
 
 	@Override
@@ -210,7 +228,7 @@ public class EditOneContact extends Activity {
 			type.setText(p.type());
 			number.setText(p.number());
 
-			// TODO preparePhoneButtonInRow(row);
+			prepareButtonInPhoneRow(row, c);
 			phoneVerticalLinearLayout.addView(row);
 			phoneRows.add(row);
 		}
