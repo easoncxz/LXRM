@@ -1,7 +1,11 @@
 package com.easoncxz.lxrm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -9,13 +13,18 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.Email;
 import com.easoncxz.lxrm.models.Name;
+import com.easoncxz.lxrm.models.Phone;
 import com.easoncxz.lxrm.storage.DataStore;
 import com.easoncxz.lxrm.storage.DataStoreFactory;
 
@@ -24,36 +33,19 @@ public class EditOneContact extends Activity {
 
 	public static final String RESULT_WANTED_TO_VIEW = "I_want_to_view_this_contact";
 
-	private Contact c;
 	private DataStore ds;
+	private Contact c;
 
-	/**
-	 * @deprecated unfinished.
-	 */
-	private void updateUIElements(Contact contact) {
-		if (contact == null) {
-			// do nothing, or
-			// throw new RuntimeException("Contact shouldn't be null");
-			Toast.makeText(this, "Creating new contact", Toast.LENGTH_SHORT)
-					.show();
-		} else {
-			TextView v = (TextView) findViewById(R.id.person_name_field);
-			v.setText(contact.getName().formattedName());
-			// TODO emails & phones too.
-		}
-		LinearLayout emailFieldsLayout = (LinearLayout) findViewById(R.id.email_fields_layout);
-		LinearLayout phoneFieldsLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
-		LayoutInflater inflater = getLayoutInflater();
-		View inflated = inflater.inflate(R.layout.email_field,
-				emailFieldsLayout);
-		inflated = inflater.inflate(R.layout.email_field, emailFieldsLayout);
-		inflated = inflater.inflate(R.layout.email_field, emailFieldsLayout);
-		inflated = inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
-		inflated = inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
-		inflated = inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
-	}
+	// UI elements
+	private LayoutInflater inflater;
+	private TextView nameField;
+	private LinearLayout phoneFieldsLayout;
+	private LinearLayout emailFieldsLayout;
+	private Button addPhoneButton;
+	private Button addEmailButton;
+	private List<LinearLayout> phoneFields = new ArrayList<LinearLayout>();
+	private List<LinearLayout> emailFields = new ArrayList<LinearLayout>();
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,40 +53,92 @@ public class EditOneContact extends Activity {
 		setContentView(R.layout.activity_edit_one_contact);
 		// Show the Up button in the action bar.
 		setupActionBar();
+
 		ds = DataStoreFactory.getDataStore(this);
 		Log.d("EditOneContact#onCreate", "got DataStore");
 
 		Bundle extras = getIntent().getExtras();
-		// might be null - when creating new contact
-
 		if (extras != null) {
 			// we are editing an existing contact.
-
 			long id = extras.getLong(Contact.KEY_ID, -1);
 			// That key should always be in the extras! The -1 should never be
 			// needed!
-
 			try {
 				this.c = ds.get(id);
 			} catch (ContactNotFoundException e) {
+				// this should never happen
 				this.c = (new Contact.Builder("Contact not found")).build();
 			}
 		} else {
+			// we are editing a new contact.
 			Log.d("EditOneContact",
 					"We know that the extras passed to us are null");
-			// we are editing a new contact.
+			this.c = null;
 		}
 
-		updateUIElements(this.c);
+		inflater = getLayoutInflater();
+		nameField = (TextView) findViewById(R.id.person_name_field);
+		phoneFieldsLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
+		emailFieldsLayout = (LinearLayout) findViewById(R.id.email_fields_layout);
+		addPhoneButton = (Button) findViewById(R.id.add_phone_button);
+		addEmailButton = (Button) findViewById(R.id.add_email_button);
+
+		if (this.c == null) {
+			// We are creating new contact.
+			// No need to fill in any text boxes.
+			Toast.makeText(this, "Creating new contact", Toast.LENGTH_SHORT)
+					.show();
+		} else {
+			// We are editing an existing contact.
+			// The old information about the contact needs to be displayed.
+			Name name = this.c.getName();
+			List<Phone> phones = this.c.getPhones();
+			List<Email> emails = this.c.getEmails();
+
+			nameField.setText(name.formattedName());
+			for (Phone p : phones) {
+				LinearLayout ll = (LinearLayout) inflater.inflate(
+						R.layout.phone_field, phoneFieldsLayout);
+				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
+				EditText nf = (EditText) ll
+						.findViewById(R.id.phone_number_field);
+				tf.setText(p.type());
+				nf.setText(p.number());
+				phoneFields.add(ll);
+			}
+			for (Email e : emails) {
+				LinearLayout ll = (LinearLayout) inflater.inflate(
+						R.layout.email_field, emailFieldsLayout);
+				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
+				EditText af = (EditText) ll.findViewById(R.id.email_type_field);
+				tf.setText(e.type());
+				af.setText(e.address());
+				emailFields.add(ll);
+			}
+			addPhoneButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					LinearLayout ll = (LinearLayout) inflater.inflate(
+							R.layout.phone_field, phoneFieldsLayout);
+					phoneFields.add(ll);
+				}
+			});
+			addEmailButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					LinearLayout ll = (LinearLayout) inflater.inflate(
+							R.layout.email_field, emailFieldsLayout);
+					emailFields.add(ll);
+				}
+			});
+		}
 	}
 
 	/**
 	 * Set up the {@link android.app.ActionBar}.
 	 */
 	private void setupActionBar() {
-
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override
@@ -118,33 +162,56 @@ public class EditOneContact extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.action_save:
-			Contact c;
-			if (this.c != null) {
-				c = this.c;
-				Name name = new Name(
-						((TextView) findViewById(R.id.person_name_field))
-								.getText().toString());
-				c.putName(name);
+			// Grab the content in the UI elements,
+			// create a Contact object,
+			// then store it in the DataStore.
+			Name name = new Name(nameField.getText().toString());
+			if (this.c == null) {
+				// We should save a new contact.
+				this.c = (new Contact.Builder(name.formattedName())).build();
+
 			} else {
-				c = (new Contact.Builder(
-						((TextView) findViewById(R.id.person_name_field))
-								.getText().toString())).build();
+				// We should update an existing contact.
+				this.c.putName(name);
 			}
-			// TODO create the contact object properly: include multiple Phones,
-			// Emails
+			// Now we have a Contact object which has a correct id.
+
+			for (LinearLayout ll : phoneFields) {
+				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
+				EditText nf = (EditText) ll
+						.findViewById(R.id.phone_number_field);
+				Phone p = new Phone(-1, tf.toString(), nf.toString());
+				this.c.putPhone(p);
+			}
+			for (LinearLayout ll : emailFields) {
+				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
+				EditText af = (EditText) ll
+						.findViewById(R.id.email_address_field);
+				Email e = new Email(-1, tf.toString(), af.toString());
+				this.c.putEmail(e);
+			}
 
 			long id = ds.put(c);
-			// id == c.getId() != -1 ? c.getId() : the_new_id_from_the_ds
+			Log.d("EditOneContact#onOptionsItemSelected",
+					"id returned from ds#put(Contact): " + Long.toString(id));
 
 			Intent result = new Intent();
 			Bundle b = new Bundle();
 			b.putLong(Contact.KEY_ID, id);
 			result.putExtras(b);
 			setResult(RESULT_OK, result);
+			Log.d("EditOneContact#onOptionsItemSelected", "to call finish()");
 			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		Log.d("EditOneContact#onConfigurationChanged",
+				"entered onConfigurationChanged()");
 	}
 }
