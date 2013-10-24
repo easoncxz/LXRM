@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -15,10 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
@@ -72,6 +72,7 @@ public class EditOneContact extends Activity {
 						R.layout.item_phone_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
+				// TODO EditOneContact.this.prepareButtonInRow(row);
 				phoneRows.add(row);
 				phoneVerticalLinearLayout.addView(row);
 			}
@@ -83,10 +84,35 @@ public class EditOneContact extends Activity {
 						R.layout.item_email_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
+				EditOneContact.this.prepareButtonInEmailRow(row);
 				emailRows.add(row);
 				emailVerticalLinearLayout.addView(row);
 			}
 		});
+	}
+
+	// private class DeletePhoneistener implements OnClickListener {
+	// @Override
+	// public void onClick(View v) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	// }
+
+	private class DeleteEmailListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			LinearLayout row = (LinearLayout) v.getTag();
+			ViewGroup parent = (ViewGroup) row.getParent();
+			parent.removeView(row);
+		}
+	}
+
+	private void prepareButtonInEmailRow(LinearLayout row) {
+		// relies on both item-XML's using the same ID for the ImageButton
+		ImageButton button = (ImageButton) row.findViewById(R.id.email_delete);
+		button.setOnClickListener(new DeleteEmailListener());
+		button.setTag(row);
 	}
 
 	@Override
@@ -172,6 +198,8 @@ public class EditOneContact extends Activity {
 					"number of this retrieved phone: " + p.number());
 			type.setText(p.type());
 			number.setText(p.number());
+
+			// TODO preparePhoneButtonInRow(row);
 			phoneVerticalLinearLayout.addView(row);
 			phoneRows.add(row);
 		}
@@ -194,6 +222,8 @@ public class EditOneContact extends Activity {
 					"number of this retrieved email: " + e.address());
 			type.setText(e.type());
 			address.setText(e.address());
+
+			prepareButtonInEmailRow(row);
 			emailVerticalLinearLayout.addView(row);
 			emailRows.add(row);
 		}
@@ -231,7 +261,7 @@ public class EditOneContact extends Activity {
 							+ (this.c == null ? "null" : this.c.getId()) + ") "
 							+ name.formattedName());
 
-			this.buildContactAndOrUpdateName(this.c, name);
+			this.c = this.buildContactOrUpdateName(this.c, name);
 			// Now we have a Contact object which has a correct id.
 
 			Log.d("EditOneContact#onOptionsItemSelected", "We can see "
@@ -259,7 +289,7 @@ public class EditOneContact extends Activity {
 		}
 	}
 
-	private void buildContactAndOrUpdateName(Contact c, Name name) {
+	private Contact buildContactOrUpdateName(Contact c, Name name) {
 		if (c == null) {
 			// We should save a new contact.
 			c = (new Contact.Builder(name.formattedName())).build();
@@ -267,6 +297,7 @@ public class EditOneContact extends Activity {
 			// We should update an existing contact.
 			c.putName(name);
 		}
+		return c;
 	}
 
 	private void updateContactPhonesFromUi(Contact c,
