@@ -19,8 +19,13 @@
     <string name="emails_header">Emails</string>
     <string name="email_hint">Enter address here …</string>
     <string name="type">label</string>
-    <string name="sort_this_list">Sort this list</string>
+    <string name="sort_this_list">Sort this list?</string>
     <string name="sort_this_list_how">The list will be sorted according to alphanumeric order of the first phone field of the contact. Continue?</string>
     <string name="list_sorted">List sorted</string>
+    <string name="delete_this_contact">Delete this contact?</string>
+    <string name="delete_this_contact_how">will be deleted, including all contact data of this contact.</string>
+    <string name="saved">Saved</string>
+    <string name="contact_deleted">Contact deleted</string>
+    <string name="empty">No contacts to display</string>
 
 </resources>

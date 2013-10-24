@@ -2,11 +2,11 @@ package com.easoncxz.lxrm;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +48,9 @@ public class MainActivity extends Activity {
 		v.setAdapter(a);
 		// then registers event handlers for the ListView:
 		v.setOnItemClickListener(l);
+		LayoutInflater i = getLayoutInflater();
+		View empty = i.inflate(R.layout.empty, null);
+		v.setEmptyView(empty);
 	}
 
 	/**

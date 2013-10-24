@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -278,7 +280,7 @@ public class EditOneContact extends Activity {
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-		case R.id.action_save:
+		case R.id.action_save: {
 			// Grab the content in the UI elements,
 			// create a Contact object,
 			// then store it in the DataStore.
@@ -306,13 +308,50 @@ public class EditOneContact extends Activity {
 					"id returned from ds#put(Contact): " + Long.toString(id));
 
 			Intent result = new Intent();
-			Bundle b = new Bundle();
-			b.putLong(Contact.KEY_ID, id);
-			result.putExtras(b);
+			Bundle bundle = new Bundle();
+			bundle.putLong(Contact.KEY_ID, id);
+			result.putExtras(bundle);
 			setResult(RESULT_OK, result);
 			Log.v("EditOneContact#onOptionsItemSelected", "to call finish()");
+			Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
 			finish();
 			return true;
+		}
+		case R.id.action_delete: {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.delete_this_contact);
+			builder.setMessage((EditOneContact.this.c == null ? "This contact "
+					: ("\"" + EditOneContact.this.c.getName().formattedName() + "\" "))
+					+ getString(R.string.delete_this_contact_how));
+			// builder.setIcon(R.drawable.ic_action_sort_by_size_dark);
+			builder.setCancelable(true);
+			builder.setPositiveButton(android.R.string.yes,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (EditOneContact.this.c != null) {
+								try {
+									ds.delete(EditOneContact.this.c.getId());
+								} catch (ContactNotFoundException e) {
+									e.printStackTrace();
+								}
+							}
+							Toast.makeText(EditOneContact.this,
+									R.string.contact_deleted,
+									Toast.LENGTH_SHORT).show();
+							finish();
+						}
+					});
+			builder.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+			builder.create().show();
+			return true;
+		}
 		default:
 			return super.onOptionsItemSelected(item);
 		}

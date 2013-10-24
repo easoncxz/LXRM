@@ -3,6 +3,8 @@ package com.easoncxz.lxrm;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -10,9 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
@@ -155,17 +157,46 @@ public class ViewOneContact extends Activity {
 			return true;
 		case R.id.action_delete:
 			if (this.c != null) {
-				try {
-					ds.delete(this.c.getId());
-				} catch (ContactNotFoundException e) {
-					e.printStackTrace();
-				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.delete_this_contact);
+				builder.setMessage((ViewOneContact.this.c == null ? "This contact "
+						: ("\""
+								+ ViewOneContact.this.c.getName()
+										.formattedName() + "\" "))
+						+ getString(R.string.delete_this_contact_how));
+				// builder.setIcon(R.drawable.ic_action_sort_by_size_dark);
+				builder.setCancelable(true);
+				builder.setPositiveButton(android.R.string.yes,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								try {
+									ds.delete(ViewOneContact.this.c.getId());
+									finish();
+								} catch (ContactNotFoundException e) {
+									e.printStackTrace();
+								}
+								Toast.makeText(ViewOneContact.this,
+										R.string.contact_deleted,
+										Toast.LENGTH_SHORT).show();
+							}
+						});
+				builder.setNegativeButton(android.R.string.cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.cancel();
+							}
+						});
+				builder.create().show();
+				return true;
+			} else {
+				finish();
 			}
-			finish();
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 }
