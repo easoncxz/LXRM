@@ -87,10 +87,6 @@ public final class Contact {
 	 * Safely puts Phone objects with whatever id.
 	 */
 	public void putPhone(Phone phone) {
-		if (!(phone.id() < this.phones.size())) {
-			throw new RuntimeException(
-					"The ID of your Phone object is larger than it should be.");
-		}
 		List<Phone> oldList = this.phones;
 		List<Phone> newList;
 		if (phone.id() == -1) {
@@ -113,10 +109,6 @@ public final class Contact {
 	 * Safely puts Email objects with whatever id.
 	 */
 	public void putEmail(Email email) {
-		if (!(email.id() < this.emails.size())) {
-			throw new RuntimeException(
-					"The ID of your Email object is larger than it should be.");
-		}
 		List<Email> oldList = this.emails;
 		List<Email> newList;
 		if (email.id() == -1) {
