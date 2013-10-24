@@ -65,6 +65,7 @@ public class EditOneContact extends Activity {
 		emailVerticalLinearLayout = (LinearLayout) findViewById(R.id.email_fields_layout);
 		addPhoneButton = (Button) findViewById(R.id.add_phone_button);
 		addEmailButton = (Button) findViewById(R.id.add_email_button);
+
 		addPhoneButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -72,7 +73,8 @@ public class EditOneContact extends Activity {
 						R.layout.item_phone_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
-				// TODO EditOneContact.this.prepareButtonInRow(row);
+
+				// EditOneContact.this.prepareButtonInRow(row);
 				phoneRows.add(row);
 				phoneVerticalLinearLayout.addView(row);
 			}
@@ -84,7 +86,9 @@ public class EditOneContact extends Activity {
 						R.layout.item_email_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
-				EditOneContact.this.prepareButtonInEmailRow(row);
+
+				EditOneContact.this.prepareButtonInEmailRow(row,
+						EditOneContact.this.c);
 				emailRows.add(row);
 				emailVerticalLinearLayout.addView(row);
 			}
@@ -94,25 +98,32 @@ public class EditOneContact extends Activity {
 	// private class DeletePhoneistener implements OnClickListener {
 	// @Override
 	// public void onClick(View v) {
-	// // TODO Auto-generated method stub
 	//
 	// }
 	// }
 
 	private class DeleteEmailListener implements OnClickListener {
+
+		private Contact c;
+
+		private DeleteEmailListener(Contact c) {
+			this.c = c;
+		}
+
 		@Override
 		public void onClick(View v) {
-			LinearLayout row = (LinearLayout) v.getTag();
+			LinearLayout row = (LinearLayout) v.getParent();
+			long emailId = Long
+					.valueOf(Integer.toString((Integer) row.getTag()));
+			c.removeEmail(emailId);
 			ViewGroup parent = (ViewGroup) row.getParent();
 			parent.removeView(row);
 		}
 	}
 
-	private void prepareButtonInEmailRow(LinearLayout row) {
-		// relies on both item-XML's using the same ID for the ImageButton
+	private void prepareButtonInEmailRow(LinearLayout row, Contact c) {
 		ImageButton button = (ImageButton) row.findViewById(R.id.email_delete);
-		button.setOnClickListener(new DeleteEmailListener());
-		button.setTag(row);
+		button.setOnClickListener(new DeleteEmailListener(c));
 	}
 
 	@Override
@@ -223,7 +234,7 @@ public class EditOneContact extends Activity {
 			type.setText(e.type());
 			address.setText(e.address());
 
-			prepareButtonInEmailRow(row);
+			prepareButtonInEmailRow(row, c);
 			emailVerticalLinearLayout.addView(row);
 			emailRows.add(row);
 		}
@@ -319,10 +330,10 @@ public class EditOneContact extends Activity {
 	private Phone createPhoneFromRow(LinearLayout row) {
 		// For some reason this method is really buggy.
 		// Pay more attention to which LinearLayout "row" actually is.
-		long rowId = Long.valueOf(Integer.toString((Integer) row.getTag()));
+		long phoneId = Long.valueOf(Integer.toString((Integer) row.getTag()));
 		Log.v("EditOneContact#onOptionsItemSelected",
 				"the LinearLayout we are looking at: #" + row.hashCode() + " ("
-						+ rowId + ")\n" + "This 'row' has: "
+						+ phoneId + ")\n" + "This 'row' has: "
 						+ row.getChildCount() + " children views");
 		// row.setBackgroundColor(Color.YELLOW);
 		EditText tf = (EditText) row.findViewById(R.id.phone_type_field);
@@ -335,16 +346,16 @@ public class EditOneContact extends Activity {
 		String tt = tf.getText().toString();
 		String nt = nf.getText().toString();
 		Log.v("EditOneContact#onOptionsItemSelected", "The parsed user input: "
-				+ tt + ": " + nt + " (at row no. " + rowId + ")");
-		Phone p = new Phone(rowId, tt, nt);
+				+ tt + ": " + nt + " (at row no. " + phoneId + ")");
+		Phone p = new Phone(phoneId, tt, nt);
 		return p;
 	}
 
 	private Email createEmailFromRow(LinearLayout row) {
-		long rowId = Long.valueOf(Integer.toString((Integer) row.getTag()));
+		long emailId = Long.valueOf(Integer.toString((Integer) row.getTag()));
 		EditText tf = (EditText) row.findViewById(R.id.email_type_field);
 		EditText af = (EditText) row.findViewById(R.id.email_address_field);
-		Email e = new Email(rowId, tf.getText().toString(), af.getText()
+		Email e = new Email(emailId, tf.getText().toString(), af.getText()
 				.toString());
 		return e;
 	}

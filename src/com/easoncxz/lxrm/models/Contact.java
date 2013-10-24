@@ -145,6 +145,34 @@ public final class Contact {
 		this.emails = newList;
 	}
 
+	/**
+	 * @param id
+	 * @return true for a successful remove.
+	 */
+	public boolean removePhone(long id) {
+		for (int i = 0; i < this.phones.size(); i++) {
+			if (phones.get(i).id() == id) {
+				phones.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param id
+	 * @return true for a successful remove.
+	 */
+	public boolean removeEmail(long id) {
+		for (int i = 0; i < this.emails.size(); i++) {
+			if (emails.get(i).id() == id) {
+				emails.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// generated getters below
 
 	public long getId() {
