@@ -56,12 +56,6 @@ public class ViewOneContact extends Activity {
 
 	}
 
-	private void inflateEmailLabels(List<Email> emails,
-			LinearLayout emailsLayout, LayoutInflater inflater) {
-
-		// TODO fill in emails
-	}
-
 	private void updateNameLabel(Name name, TextView nameLabel) {
 		nameLabel.setText(name.formattedName());
 	}
@@ -77,6 +71,20 @@ public class ViewOneContact extends Activity {
 			type.setText(p.type());
 			number.setText(p.number());
 			phonesLayout.addView(row);
+		}
+	}
+
+	private void inflateEmailLabels(List<Email> emails,
+			LinearLayout emailsLayout, LayoutInflater inflater) {
+		for (Email e : emails) {
+			LinearLayout row = (LinearLayout) inflater.inflate(
+					R.layout.phone_label, null);
+			TextView type = (TextView) row.findViewById(R.id.phone_type_label);
+			TextView number = (TextView) row
+					.findViewById(R.id.phone_number_label);
+			type.setText(e.type());
+			number.setText(e.address());
+			emailsLayout.addView(row);
 		}
 	}
 
