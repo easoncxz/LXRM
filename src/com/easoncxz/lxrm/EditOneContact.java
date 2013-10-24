@@ -130,20 +130,22 @@ public class EditOneContact extends Activity {
 			@Override
 			public void onClick(View v) {
 				LinearLayout row = (LinearLayout) inflater.inflate(
-						R.layout.phone_field, phoneVerticalLinearLayout);
+						R.layout.phone_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
 				phoneRows.add(row);
+				phoneVerticalLinearLayout.addView(row);
 			}
 		});
 		addEmailButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				LinearLayout row = (LinearLayout) inflater.inflate(
-						R.layout.email_field, emailVerticalLinearLayout);
+						R.layout.email_field, null);
 				row.setTag(-1);
 				// to be interpreted as a contact id; indicating a new contact
 				emailRows.add(row);
+				emailVerticalLinearLayout.addView(row);
 			}
 		});
 	}
@@ -222,33 +224,11 @@ public class EditOneContact extends Activity {
 			Log.d("EditOneContact#onOptionsItemSelected", "We can see "
 					+ phoneRows.size() + " rows of EditText here.");
 			for (LinearLayout row : phoneRows) {
-				long rowId = (Integer) row.getTag();
-				Log.v("EditOneContact#onOptionsItemSelected",
-						"the LinearLayout we are looking at: #"
-								+ row.hashCode() + " (" + rowId + ")");
-				EditText tf = (EditText) row
-						.findViewById(R.id.phone_type_field);
-				// EditText tf = (EditText) ll.getChildAt(0);
-				EditText nf = (EditText) row
-						.findViewById(R.id.phone_number_field);
-				// EditText nf = (EditText) ll.getChildAt(1);
-				Log.v("EditOneContact#onOptionsItemSelected",
-						"The EditText we are looking at: " + tf.hashCode()
-								+ ": " + nf.hashCode());
-				String tt = tf.getText().toString();
-				String nt = nf.getText().toString();
-				Log.v("EditOneContact#onOptionsItemSelected",
-						"The parsed user input: " + tt + ": " + nt
-								+ " (at row no. " + rowId + ")");
-				Phone p = new Phone(rowId, tt, nt);
+				Phone p = this.createPhoneFromRow(row);
 				this.c.putPhone(p);
 			}
-			for (LinearLayout ll : emailRows) {
-				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
-				EditText af = (EditText) ll
-						.findViewById(R.id.email_address_field);
-				Email e = new Email(-1, tf.getText().toString(), af.getText()
-						.toString());
+			for (LinearLayout row : emailRows) {
+				Email e = this.createEmailFromRow(row);
 				this.c.putEmail(e);
 			}
 
@@ -270,6 +250,39 @@ public class EditOneContact extends Activity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private Email createEmailFromRow(LinearLayout row) {
+		long rowId = Long.valueOf(Integer.toString((Integer) row.getTag()));
+		EditText tf = (EditText) row.findViewById(R.id.email_type_field);
+		EditText af = (EditText) row.findViewById(R.id.email_address_field);
+		Email e = new Email(rowId, tf.getText().toString(), af.getText()
+				.toString());
+		return e;
+	}
+
+	private Phone createPhoneFromRow(LinearLayout row) {
+		// For some reason this method is really buggy.
+		// Pay more attention to which LinearLayout "row" actually is.
+		long rowId = Long.valueOf(Integer.toString((Integer) row.getTag()));
+		Log.v("EditOneContact#onOptionsItemSelected",
+				"the LinearLayout we are looking at: #" + row.hashCode() + " ("
+						+ rowId + ")\n" + "This 'row' has: "
+						+ row.getChildCount() + " children views");
+		// row.setBackgroundColor(Color.YELLOW);
+		EditText tf = (EditText) row.findViewById(R.id.phone_type_field);
+		// EditText tf = (EditText) row.getChildAt(0);
+		EditText nf = (EditText) row.findViewById(R.id.phone_number_field);
+		// EditText nf = (EditText) row.getChildAt(1);
+		Log.v("EditOneContact#onOptionsItemSelected",
+				"The EditText we are looking at: " + tf.hashCode() + ": "
+						+ nf.hashCode());
+		String tt = tf.getText().toString();
+		String nt = nf.getText().toString();
+		Log.v("EditOneContact#onOptionsItemSelected", "The parsed user input: "
+				+ tt + ": " + nt + " (at row no. " + rowId + ")");
+		Phone p = new Phone(rowId, tt, nt);
+		return p;
 	}
 
 	@Override
