@@ -94,13 +94,18 @@ public final class Contact {
 				+ " phones.");
 		List<Phone> newList;
 		long id = phone.id();
-		Log.d("Contact#putPhone", "id of phone we were told to put: " + id);
+		Log.d("Contact#putPhone", "the new phone is:\n\t(" + phone.id() + ") "
+				+ phone.type() + ": " + phone.number());
 		if (id == -1) {
 			newList = oldList;
 			newList.add(phone);
 			Log.d("Contact#putPhone",
 					"after making an attempt to put this phone, the contact now has: "
-							+ newList.size() + " phones");
+							+ newList.size() + " phones, which are:");
+			for (Phone p : newList) {
+				Log.d("Contact#putPhone", "\t(" + Long.toString(p.id()) + ") "
+						+ p.type() + ": " + p.number());
+			}
 		} else {
 			newList = new ArrayList<Phone>();
 			for (Phone p : oldList) {

@@ -180,17 +180,22 @@ public class EditOneContact extends Activity {
 				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
 				EditText nf = (EditText) ll
 						.findViewById(R.id.phone_number_field);
-				Phone p = new Phone(-1, tf.toString(), nf.toString());
+				Phone p = new Phone(-1, tf.getText().toString(), nf.getText()
+						.toString());
 				this.c.putPhone(p);
 			}
 			for (LinearLayout ll : emailFields) {
 				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
 				EditText af = (EditText) ll
 						.findViewById(R.id.email_address_field);
-				Email e = new Email(-1, tf.toString(), af.toString());
+				Email e = new Email(-1, tf.getText().toString(), af.getText()
+						.toString());
 				this.c.putEmail(e);
 			}
 
+			Log.d("EditOneContact#onOptionsItemSelected",
+					"we're about to call put(). the id of the contact that is to be put: "
+							+ Long.toString(this.c.getId()));
 			long id = ds.put(c);
 			Log.d("EditOneContact#onOptionsItemSelected",
 					"id returned from ds#put(Contact): " + Long.toString(id));

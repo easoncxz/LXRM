@@ -100,12 +100,15 @@ public class DBDataStore extends DataStore {
 	 */
 	@Override
 	public long put(Contact contact) {
-		Log.d("DBDataStore", "this is DBDataStore#put");
+		Log.d("DBDataStore#put",
+				"this is DBDataStore#put, which adds a phone to your contact");
 		SQLiteDatabase db = h.getWritableDatabase();
 
 		contact.putPhone(new Phone(-1, "DBDataStore", "111"));
 
 		long contactId = contact.getId();
+		Log.d("DBDataStore#put",
+				"the id of the contact is: " + Long.toString(contactId));
 		if (contactId == -1) {
 			contactId = this.createNewContact(contact, db);
 		} else {
@@ -172,6 +175,8 @@ public class DBDataStore extends DataStore {
 		// We are editing an existing contact.
 		// However, it is still possible that new Phone/Email entries are
 		// created.
+		Log.d("Contact#updateExistingContact",
+				"entered updateExistingContact()");
 		long contactId = contact.getId();
 		{
 			Name name = contact.getName();
@@ -179,6 +184,9 @@ public class DBDataStore extends DataStore {
 			cv.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
 			// Storing `Name.formattedName` to be parsed as inputtedName
 			// later.
+			Log.d("Contact#updateExistingContact",
+					"ready to update contact with id: " + contactId
+							+ " and name: " + name);
 			db.update(Helper.TABLE_CONTACTS, cv, Helper.COLUMN_ID + " == ?",
 					new String[] { Long.toString(contactId) });
 		}
@@ -314,17 +322,19 @@ public class DBDataStore extends DataStore {
 	private long createNewPhone(Phone newPhone, long contactId,
 			SQLiteDatabase db) {
 		ContentValues cv = new ContentValues();
-		cv.put(Helper.COLUMN_ID, newPhone.id());
 		cv.put(Helper.COLUMN_OWNER_ID, contactId);
 		cv.put(Helper.COLUMN_TYPE, newPhone.type());
 		cv.put(Helper.COLUMN_PHONE_NUMBER, newPhone.number());
+		Log.d("DBDataStore#createNewPhone", "ready to insert, for contact ("
+				+ contactId + "), this phone:");
+		Log.d("DBDataStore#createNewPhone", "\t(" + newPhone.id() + ") "
+				+ newPhone.type() + ": " + newPhone.number());
 		return db.insert(Helper.TABLE_PHONES, null, cv);
 	}
 
 	private long createNewEmail(Email newEmail, long contactId,
 			SQLiteDatabase db) {
 		ContentValues cv = new ContentValues();
-		cv.put(Helper.COLUMN_ID, newEmail.id());
 		cv.put(Helper.COLUMN_OWNER_ID, contactId);
 		cv.put(Helper.COLUMN_TYPE, newEmail.type());
 		cv.put(Helper.COLUMN_EMAIL_ADDRESS, newEmail.address());
@@ -442,7 +452,7 @@ public class DBDataStore extends DataStore {
 
 	@Override
 	public ContactList getAll() {
-		Log.d("DBDataStore#getAll", "getAll()");
+		Log.d("DBDataStore#getAll", "entered getAll()");
 		SQLiteDatabase db = h.getReadableDatabase();
 		Log.d("DBDataStore#getAll", "db got");
 		Cursor cursor = db.query(Helper.TABLE_CONTACTS, new String[] {
