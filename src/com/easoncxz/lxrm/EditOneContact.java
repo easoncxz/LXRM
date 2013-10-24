@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -96,9 +97,10 @@ public class EditOneContact extends Activity {
 			List<Email> emails = this.c.getEmails();
 
 			nameField.setText(name.formattedName());
+
 			for (Phone p : phones) {
 				LinearLayout ll = (LinearLayout) inflater.inflate(
-						R.layout.phone_field, phoneFieldsLayout);
+						R.layout.phone_field, null);
 				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
 				EditText nf = (EditText) ll
 						.findViewById(R.id.phone_number_field);
@@ -110,6 +112,7 @@ public class EditOneContact extends Activity {
 				nf.setText(p.number());
 				phoneFields.add(ll);
 			}
+
 			for (Email e : emails) {
 				LinearLayout ll = (LinearLayout) inflater.inflate(
 						R.layout.email_field, emailFieldsLayout);
@@ -119,6 +122,7 @@ public class EditOneContact extends Activity {
 				af.setText(e.address());
 				emailFields.add(ll);
 			}
+
 			addPhoneButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -127,6 +131,7 @@ public class EditOneContact extends Activity {
 					phoneFields.add(ll);
 				}
 			});
+
 			addEmailButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -136,6 +141,7 @@ public class EditOneContact extends Activity {
 				}
 			});
 		}
+		Log.d("EditOneContact#onCreate", "exitting onCreate()");
 	}
 
 	/**
@@ -169,10 +175,13 @@ public class EditOneContact extends Activity {
 			// Grab the content in the UI elements,
 			// create a Contact object,
 			// then store it in the DataStore.
+			Log.d("EditOneContact#onOptionsItemSelected", "nameField==null? - "
+					+ (nameField == null));
 			Name name = new Name(nameField.getText().toString());
 			Log.d("EditOneContact#onOptionsItemSelected",
 					"We are now trying to save this contact: ("
-							+ this.c.getId() + ") " + name.formattedName());
+							+ (this.c == null ? "null" : this.c.getId()) + ") "
+							+ name.formattedName());
 			if (this.c == null) {
 				// We should save a new contact.
 				this.c = (new Contact.Builder(name.formattedName())).build();
@@ -188,7 +197,8 @@ public class EditOneContact extends Activity {
 				EditText nf = (EditText) ll
 						.findViewById(R.id.phone_number_field);
 				Log.d("EditOneContact#onOptionsItemSelected",
-						"The EditText we are looking at: " + tf + ": " + nf);
+						"The EditText we are looking at: " + tf.hashCode()
+								+ ": " + nf.hashCode());
 				String tt = tf.getText().toString();
 				String nt = nf.getText().toString();
 				Log.d("EditOneContact#onOptionsItemSelected",
