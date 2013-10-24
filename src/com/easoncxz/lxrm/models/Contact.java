@@ -3,6 +3,8 @@ package com.easoncxz.lxrm.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 /**
  * A data abstraction class.
  * <p>
@@ -36,22 +38,22 @@ public final class Contact {
 		private long id = -1;
 		private Name name;
 
-		// private List<Phone> phones = new ArrayList<Phone>();
-		// private List<Email> emails = new ArrayList<Email>();
+		private List<Phone> phones = new ArrayList<Phone>();
+		private List<Email> emails = new ArrayList<Email>();
 
 		public Builder(String inputtedName) {
 			this.name = new Name(inputtedName);
 		}
 
-		// public Builder addPhones(List<Phone> phones) {
-		// this.phones.addAll(phones);
-		// return this;
-		// }
-		//
-		// public Builder addEmails(List<Email> emails) {
-		// this.emails.addAll(emails);
-		// return this;
-		// }
+		public Builder addPhones(List<Phone> phones) {
+			this.phones.addAll(phones);
+			return this;
+		}
+
+		public Builder addEmails(List<Email> emails) {
+			this.emails.addAll(emails);
+			return this;
+		}
 
 		/**
 		 * Allows creator of the Contact object to specify an id (of not the
@@ -71,8 +73,8 @@ public final class Contact {
 
 	private Contact(Builder builder) {
 		this.id = builder.id;
-		// this.phones = builder.phones; // could be empty; wouldn't be null
-		// this.emails = builder.emails; // could be empty; wouldn't be null
+		this.phones = builder.phones; // could be empty; wouldn't be null
+		this.emails = builder.emails; // could be empty; wouldn't be null
 		this.name = builder.name;
 	}
 
@@ -88,13 +90,22 @@ public final class Contact {
 	 */
 	public void putPhone(Phone phone) {
 		List<Phone> oldList = this.phones;
+		Log.d("Contact#putPhone", "the Contact used to have: " + oldList.size()
+				+ " phones.");
 		List<Phone> newList;
-		if (phone.id() == -1) {
+		long id = phone.id();
+		Log.d("Contact#putPhone", "id of phone we were told to put: " + id);
+		if (id == -1) {
 			newList = oldList;
 			newList.add(phone);
+			Log.d("Contact#putPhone",
+					"after making an attempt to put this phone, the contact now has: "
+							+ newList.size() + " phones");
 		} else {
 			newList = new ArrayList<Phone>();
 			for (Phone p : oldList) {
+				Log.d("Contact#putPhone",
+						"an existing phone with id: " + p.id() + " is found");
 				if (p.id() == phone.id()) {
 					newList.add(phone);
 				} else {

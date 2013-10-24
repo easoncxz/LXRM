@@ -102,6 +102,9 @@ public class DBDataStore extends DataStore {
 	public long put(Contact contact) {
 		Log.d("DBDataStore", "this is DBDataStore#put");
 		SQLiteDatabase db = h.getWritableDatabase();
+
+		contact.putPhone(new Phone(-1, "DBDataStore", "111"));
+
 		long contactId = contact.getId();
 		if (contactId == -1) {
 			contactId = this.createNewContact(contact, db);
@@ -392,42 +395,48 @@ public class DBDataStore extends DataStore {
 			throw new ContactNotFoundException("No contact with that id found");
 		} else {
 			// We know that: cursor.getCount() == 1
-			{
-				int count = cursor.getColumnCount();
-				String[] names = cursor.getColumnNames();
-				for (String name : names) {
-					Log.d("DBDataStore#get",
-							"column "
-									+ Integer.toString(cursor
-											.getColumnIndex(name)) + "\tis: "
-									+ name);
-				}
-			}
-			Log.d("DBDataStore#get", "column name: "
-					+ Helper.COLUMN_PERSON_NAME + ";");
 			int index = cursor.getColumnIndex(Helper.COLUMN_PERSON_NAME);
-			Log.d("DBDataStore#get", "column index: " + Integer.toString(index));
 			cursor.moveToFirst();
-			Log.d("DBDataStore#get", "cursor moved to first");
 			String name = cursor.getString(index);
-			Log.d("DBDataStore#get", "contact name: " + name);
+			Log.d("DBDataStore#get", "name retrieved: " + name);
 			contact = this.buildContact(name, id, db);
 		}
+		Log.d("DBDataStore#get", "the contact we'll return has: "
+				+ contact.getPhones().size() + " phones.");
 		Log.d("DBDataStore#get", "to exit get()");
 		return contact;
 	}
 
+	/**
+	 * Given the name, id, and from which db to get, return a Contact object
+	 * with phones and emails filled in.
+	 * 
+	 * @param name
+	 * @param id
+	 * @param db
+	 * @return
+	 */
 	private Contact buildContact(String name, long id, SQLiteDatabase db) {
-		Contact contact = (new Contact.Builder(name)).id(id).build();
-		Log.d("DBDataStore#buildContact", "construct Contact successful");
-		for (Phone p : this.getOldPhoneList(contact.getId(), db)) {
-			contact.putPhone(p);
+		List<Phone> phones = this.getOldPhoneList(id, db);
+		{
+			// scaffolding
+			Log.d("DBDataStore#buildContact",
+					"old phone list has: " + phones.size()
+							+ " entries as follows: ");
+			for (Phone p : phones) {
+				Log.d("DBDataStore#buildContact",
+						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
+			}
 		}
-		Log.d("DBDataStore#buildContact", "phones added");
+		Contact.Builder builder = new Contact.Builder(name);
+		builder.addPhones(phones);
+		builder.id(id);
+		Contact contact = builder.build();
+		Log.d("DBDataStore#buildContact", "now the contact object has: "
+				+ contact.getPhones().size() + " phones");
 		for (Email e : this.getOldEmailList(contact.getId(), db)) {
 			contact.putEmail(e);
 		}
-		Log.d("DBDataStore#buildContact", "emails added");
 		return contact;
 	}
 
