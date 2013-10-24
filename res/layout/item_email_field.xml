@@ -26,6 +26,6 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/action_delete"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_action_discard" />
+        android:src="@drawable/ic_action_discard_dark" />
 
 </LinearLayout>

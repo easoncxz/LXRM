@@ -8,14 +8,14 @@
     
     <item
         android:id="@+id/action_add_contact"
-        android:icon="@android:drawable/ic_input_add"
+        android:icon="@drawable/ic_action_new"
         android:orderInCategory="90"
         android:showAsAction="always"
         android:title="@string/action_add"/>
     
     <item 
         android:id="@+id/action_search_contact_list"
-        android:icon="@android:drawable/ic_search_category_default"
+        android:icon="@drawable/ic_action_sort_by_size"
         android:orderInCategory="80"
         android:showAsAction="always"
         android:title="@string/action_search_contact_list"
