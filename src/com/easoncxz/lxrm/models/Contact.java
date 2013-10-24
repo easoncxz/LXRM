@@ -90,26 +90,26 @@ public final class Contact {
 	 */
 	public void putPhone(Phone phone) {
 		List<Phone> oldList = this.phones;
-		Log.d("Contact#putPhone", "the Contact used to have: " + oldList.size()
+		Log.v("Contact#putPhone", "the Contact used to have: " + oldList.size()
 				+ " phones.");
 		List<Phone> newList;
 		long id = phone.id();
-		Log.d("Contact#putPhone", "the new phone is:\n\t(" + phone.id() + ") "
+		Log.v("Contact#putPhone", "the new phone is:\n\t(" + phone.id() + ") "
 				+ phone.type() + ": " + phone.number());
 		if (id == -1) {
 			newList = oldList;
 			newList.add(phone);
-			Log.d("Contact#putPhone",
+			Log.v("Contact#putPhone",
 					"after making an attempt to put this phone, the contact now has: "
 							+ newList.size() + " phones, which are:");
 			for (Phone p : newList) {
-				Log.d("Contact#putPhone", "\t(" + Long.toString(p.id()) + ") "
+				Log.v("Contact#putPhone", "\t(" + Long.toString(p.id()) + ") "
 						+ p.type() + ": " + p.number());
 			}
 		} else {
 			newList = new ArrayList<Phone>();
 			for (Phone p : oldList) {
-				Log.d("Contact#putPhone",
+				Log.v("Contact#putPhone",
 						"an existing phone with id: " + p.id() + " is found");
 				if (p.id() == phone.id()) {
 					newList.add(phone);

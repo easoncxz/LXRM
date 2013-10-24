@@ -58,18 +58,18 @@ public class DBDataStore extends DataStore {
 			// see:
 			// http://developer.android.com/guide/topics/data/data-storage.html#db
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
-			Log.d("DBDataStore$Helper", "constructor called");
+			Log.v("DBDataStore$Helper", "constructor called");
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.d("DBDataStore$Helper#onCreate", "entered onCreate()");
+			Log.v("DBDataStore$Helper#onCreate", "entered onCreate()");
 			db.execSQL(SQL_CREATE_CONTACTS_TABLE);
-			Log.d("DBDataStore$Helper#onCreate", "created contacts table");
+			Log.v("DBDataStore$Helper#onCreate", "created contacts table");
 			db.execSQL(SQL_CREATE_PHONES_TABLE);
-			Log.d("DBDataStore$Helper#onCreate", "created phones table");
+			Log.v("DBDataStore$Helper#onCreate", "created phones table");
 			db.execSQL(SQL_CREATE_EMAILS_TABLE);
-			Log.d("DBDataStore$Helper#onCreate", "created emails table");
+			Log.v("DBDataStore$Helper#onCreate", "created emails table");
 		}
 
 		@Override
@@ -80,7 +80,7 @@ public class DBDataStore extends DataStore {
 			// db.execSQL("DROP TABLE IF EXISTS " + Helper.TABLE_PHONES + ";");
 			// db.execSQL("DROP TABLE IF EXISTS " + Helper.TABLE_EMAILS + ";");
 			// this.onCreate(db);
-			Log.d("DBDataStore$Helper#onUpgrade", "onUpgrade()");
+			Log.v("DBDataStore$Helper#onUpgrade", "onUpgrade()");
 		}
 
 	}
@@ -89,7 +89,7 @@ public class DBDataStore extends DataStore {
 
 	public DBDataStore(Context context) {
 		super(context);
-		Log.d("DBDataStore", "constructor called");
+		Log.v("DBDataStore", "constructor called");
 		this.h = new Helper(context);
 	}
 
@@ -106,7 +106,7 @@ public class DBDataStore extends DataStore {
 		// contact.putPhone(new Phone(-1, "DBDataStore", "111"));
 
 		long contactId = contact.getId();
-		Log.d("DBDataStore#put",
+		Log.v("DBDataStore#put",
 				"the id of the contact is: " + Long.toString(contactId));
 		if (contactId == -1) {
 			contactId = this.createNewContact(contact, db);
@@ -174,7 +174,7 @@ public class DBDataStore extends DataStore {
 		// We are editing an existing contact.
 		// However, it is still possible that new Phone/Email entries are
 		// created.
-		Log.d("DBDataStore#updateExistingContact",
+		Log.v("DBDataStore#updateExistingContact",
 				"entered updateExistingContact()");
 		long contactId = contact.getId();
 		{
@@ -183,7 +183,7 @@ public class DBDataStore extends DataStore {
 			cv.put(Helper.COLUMN_PERSON_NAME, name.formattedName());
 			// Storing `Name.formattedName` to be parsed as inputtedName
 			// later.
-			Log.d("Contact#updateExistingContact",
+			Log.v("Contact#updateExistingContact",
 					"ready to update contact with id: " + contactId
 							+ " and name: " + name.formattedName());
 			db.update(Helper.TABLE_CONTACTS, cv, Helper.COLUMN_ID + " == ?",
@@ -210,14 +210,14 @@ public class DBDataStore extends DataStore {
 		final List<Phone> newPhones = contact.getPhones();
 
 		{
-			Log.d("DBDataStore#diffPhones", "The oldPhones:");
+			Log.v("DBDataStore#diffPhones", "The oldPhones:");
 			for (Phone p : oldPhones) {
-				Log.d("DBDataStore#diffPhones",
+				Log.v("DBDataStore#diffPhones",
 						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
 			}
-			Log.d("DBDataStore#diffPhones", "The newPhones:");
+			Log.v("DBDataStore#diffPhones", "The newPhones:");
 			for (Phone p : newPhones) {
-				Log.d("DBDataStore#diffPhones",
+				Log.v("DBDataStore#diffPhones",
 						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
 			}
 		}
@@ -337,9 +337,9 @@ public class DBDataStore extends DataStore {
 		cv.put(Helper.COLUMN_OWNER_ID, contactId);
 		cv.put(Helper.COLUMN_TYPE, newPhone.type());
 		cv.put(Helper.COLUMN_PHONE_NUMBER, newPhone.number());
-		Log.d("DBDataStore#createNewPhone", "ready to insert, for contact ("
+		Log.v("DBDataStore#createNewPhone", "ready to insert, for contact ("
 				+ contactId + "), this phone:");
-		Log.d("DBDataStore#createNewPhone", "\t(" + newPhone.id() + ") "
+		Log.v("DBDataStore#createNewPhone", "\t(" + newPhone.id() + ") "
 				+ newPhone.type() + ": " + newPhone.number());
 		return db.insert(Helper.TABLE_PHONES, null, cv);
 	}
@@ -363,9 +363,9 @@ public class DBDataStore extends DataStore {
 	 */
 	private int updateExistingPhone(Phone newPhone, long contactId,
 			SQLiteDatabase db) {
-		Log.d("DBDataStore#updateExistingPhone",
+		Log.v("DBDataStore#updateExistingPhone",
 				"Updating phone (for contact #" + Long.toString(contactId)
-						+ "):\n\t(" + newPhone.id() + ") " + newPhone.type()
+						+ "):\t(" + newPhone.id() + ") " + newPhone.type()
 						+ ": " + newPhone.number());
 		long phoneId = newPhone.id();
 		ContentValues cv = new ContentValues();
@@ -396,7 +396,7 @@ public class DBDataStore extends DataStore {
 	 * @return
 	 */
 	private int deleteExistingPhone(long phoneId, SQLiteDatabase db) {
-		Log.d("DBDataStore#deleteExistingPhone",
+		Log.v("DBDataStore#deleteExistingPhone",
 				"Deleting phone #" + Long.toString(phoneId));
 		return db.delete(Helper.TABLE_PHONES, Helper.COLUMN_ID + " == ?",
 				new String[] { Long.toString(phoneId) });
@@ -409,8 +409,8 @@ public class DBDataStore extends DataStore {
 
 	@Override
 	public Contact get(long id) throws ContactNotFoundException {
-		Log.d("DBDataStore#get", "entered get()");
-		Log.d("DBDataStore#get", "id passed in: " + Long.toString(id));
+		Log.v("DBDataStore#get", "entered get()");
+		Log.v("DBDataStore#get", "id passed in: " + Long.toString(id));
 		SQLiteDatabase db = h.getReadableDatabase();
 		Cursor cursor = db.query(Helper.TABLE_CONTACTS, new String[] {
 				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, Helper.COLUMN_ID
@@ -427,12 +427,12 @@ public class DBDataStore extends DataStore {
 			int index = cursor.getColumnIndex(Helper.COLUMN_PERSON_NAME);
 			cursor.moveToFirst();
 			String name = cursor.getString(index);
-			Log.d("DBDataStore#get", "name retrieved: " + name);
+			Log.v("DBDataStore#get", "name retrieved: " + name);
 			contact = this.buildContact(name, id, db);
 		}
-		Log.d("DBDataStore#get", "the contact we'll return has: "
+		Log.v("DBDataStore#get", "the contact we'll return has: "
 				+ contact.getPhones().size() + " phones.");
-		Log.d("DBDataStore#get", "to exit get()");
+		Log.v("DBDataStore#get", "to exit get()");
 		return contact;
 	}
 
@@ -450,11 +450,11 @@ public class DBDataStore extends DataStore {
 		List<Phone> phones = this.getOldPhoneList(id, db);
 		{
 			// scaffolding
-			Log.d("DBDataStore#buildContact",
+			Log.v("DBDataStore#buildContact",
 					"old phone list has: " + phones.size()
 							+ " entries as follows: ");
 			for (Phone p : phones) {
-				Log.d("DBDataStore#buildContact",
+				Log.v("DBDataStore#buildContact",
 						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
 			}
 		}
@@ -462,8 +462,9 @@ public class DBDataStore extends DataStore {
 		builder.addPhones(phones);
 		builder.id(id);
 		Contact contact = builder.build();
-		Log.d("DBDataStore#buildContact", "now the contact object has: "
-				+ contact.getPhones().size() + " phones");
+		Log.v("DBDataStore#buildContact",
+				"the Contact we have just built has: "
+						+ contact.getPhones().size() + " phones");
 		for (Email e : this.getOldEmailList(contact.getId(), db)) {
 			contact.putEmail(e);
 		}
@@ -472,13 +473,13 @@ public class DBDataStore extends DataStore {
 
 	@Override
 	public ContactList getAll() {
-		Log.d("DBDataStore#getAll", "entered getAll()");
+		Log.v("DBDataStore#getAll", "entered getAll()");
 		SQLiteDatabase db = h.getReadableDatabase();
-		Log.d("DBDataStore#getAll", "db got");
+		Log.v("DBDataStore#getAll", "db got");
 		Cursor cursor = db.query(Helper.TABLE_CONTACTS, new String[] {
 				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, null, null,
 				null, null, null);
-		Log.d("DBDataStore#getAll", "query successful");
+		Log.v("DBDataStore#getAll", "query successful");
 		ContactList cl = new ContactList();
 		if (cursor.moveToFirst()) {
 			do {
@@ -487,7 +488,7 @@ public class DBDataStore extends DataStore {
 				long id = cursor.getLong(cursor
 						.getColumnIndex(Helper.COLUMN_ID));
 				Contact c = this.buildContact(name, id, db);
-				Log.d("DBDataStore#getAll", "build Contact successful");
+				Log.v("DBDataStore#getAll", "build Contact successful");
 				cl.add(c);
 			} while (cursor.moveToNext());
 		}

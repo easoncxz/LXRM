@@ -33,20 +33,20 @@ public class ViewOneContact extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("ViewOneContact#onCreate", "entered onCreate()");
+		Log.v("ViewOneContact#onCreate", "entered onCreate()");
 		setContentView(R.layout.activity_view_one_contact);
 
 		setupActionBar();
 
 		Bundle extras = getIntent().getExtras();
-		Log.d("ViewOneContact#onCreate",
+		Log.v("ViewOneContact#onCreate",
 				"extras is null? - " + Boolean.toString(extras == null));
 		long id = extras.getLong(Contact.KEY_ID);
 		if (id != -1) {
 			DataStore ds = DataStoreFactory.getDataStore(this);
-			Log.d("ViewOneContact#onCreate", "datastore got");
+			Log.v("ViewOneContact#onCreate", "datastore got");
 			try {
-				Log.d("ViewOneContact#onCreate",
+				Log.v("ViewOneContact#onCreate",
 						"id from extras: " + Long.toString(id));
 				this.c = ds.get(id);
 			} catch (ContactNotFoundException e) {
@@ -111,7 +111,7 @@ public class ViewOneContact extends Activity {
 			result.putExtras(extras);
 
 			// startActivity(i, extras);
-			Log.d("ViewOneContact_CXZ",
+			Log.v("ViewOneContact_CXZ",
 					"Trying to call setResult(int, Intent).");
 			setResult(RESULT_OK, result);
 			finish();

@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("MainActivity", "onCreate()");
+		Log.v("MainActivity", "onCreate()");
 		setContentView(R.layout.activity_main);
 
 		l = (ListView) findViewById(R.id.list_of_contacts);
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.d("MainActivity", "onStart()");
+		Log.v("MainActivity", "onStart()");
 		cl = ds.getAll(); // dynamically loads latest data
 
 		// consider giving the ViewOneContactListener a name?:
@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
 		case R.id.action_add_contact: {
 			Intent i = new Intent(this, EditOneContact.class);
 			// the "extras" for Intent i is a null!
-			Log.d("MainActivity",
+			Log.v("MainActivity",
 					"#onOptionsItemSelected: creating new contact");
 			startActivityForResult(i, REQUEST_EDIT);
 			return true;
@@ -134,11 +134,11 @@ public class MainActivity extends Activity {
 		if (requestCode == REQUEST_VIEW) {
 			if (resultCode == RESULT_OK) {
 				long id = data.getLongExtra(Contact.KEY_ID, -1);
-				Log.d("MainActivity",
+				Log.v("MainActivity",
 						"id of contact to edit is: " + Long.toString(id));
 				Intent i = new Intent(this, EditOneContact.class);
 				i.putExtra(Contact.KEY_ID, id);
-				Log.d("MainActivity", "Created an intent");
+				Log.v("MainActivity", "Created an intent");
 
 				startActivityForResult(i, REQUEST_EDIT);
 			}

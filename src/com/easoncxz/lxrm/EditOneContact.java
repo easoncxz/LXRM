@@ -40,121 +40,139 @@ public class EditOneContact extends Activity {
 	// UI elements
 	private LayoutInflater inflater;
 	private TextView nameField;
-	private LinearLayout phoneFieldsLayout;
-	private LinearLayout emailFieldsLayout;
+	private LinearLayout phoneVerticalLinearLayout;
+	private LinearLayout emailVerticalLinearLayout;
 	private Button addPhoneButton;
 	private Button addEmailButton;
-	private List<LinearLayout> phoneFields = new ArrayList<LinearLayout>();
-	private List<LinearLayout> emailFields = new ArrayList<LinearLayout>();
+	private List<LinearLayout> phoneRows = new ArrayList<LinearLayout>();
+	private List<LinearLayout> emailRows = new ArrayList<LinearLayout>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.v("EditOneContact#onCreate", "entered onCreate");
 		super.onCreate(savedInstanceState);
-		Log.d("EditOneContact#onCreate", "entered onCreate");
 		setContentView(R.layout.activity_edit_one_contact);
-		// Show the Up button in the action bar.
 		setupActionBar();
+		initializeUiElementsHandles();
 
 		ds = DataStoreFactory.getDataStore(this);
-		Log.d("EditOneContact#onCreate", "got DataStore");
 
 		Bundle extras = getIntent().getExtras();
+		this.c = this.getContactFromExtras(extras);
+
+		if (this.c == null) {
+			this.prepareUiForNewContact();
+		} else {
+			this.prepareUiForExistingContact(this.c);
+		}
+		Log.v("EditOneContact#onCreate", "exitting onCreate()");
+	}
+
+	private void prepareUiForExistingContact(Contact c) {
+		// We are editing an existing contact.
+		// The old information about the contact needs to be displayed.
+		Name name = c.getName();
+		List<Phone> phones = c.getPhones();
+		List<Email> emails = c.getEmails();
+
+		nameField.setText(name.formattedName());
+
+		for (Phone p : phones) {
+			LinearLayout row = (LinearLayout) inflater.inflate(
+					R.layout.phone_field, null);
+			row.setBackgroundColor(Color.RED);
+			row.setTag(Integer.valueOf(Long.toString(p.id())));
+			EditText tf = (EditText) row.findViewById(R.id.phone_type_field);
+			EditText nf = (EditText) row.findViewById(R.id.phone_number_field);
+			Log.v("EditOneContact#prepareUiForExistingContact",
+					"type of this retrieved phone: " + p.type());
+			Log.v("EditOneContact#prepareUiForExistingContact",
+					"number of this retrieved phone: " + p.number());
+			tf.setText(p.type());
+			nf.setText(p.number());
+			phoneVerticalLinearLayout.addView(row);
+			phoneRows.add(row);
+		}
+		for (LinearLayout row : phoneRows) {
+			Log.v("EditOneContact#prepareUiForExistingContact",
+					"hashCode() of this rows: " + row.hashCode());
+		}
+
+		for (Email e : emails) {
+			LinearLayout row = (LinearLayout) inflater.inflate(
+					R.layout.email_field, emailVerticalLinearLayout);
+			EditText tf = (EditText) row.findViewById(R.id.email_type_field);
+			EditText af = (EditText) row.findViewById(R.id.email_address_field);
+			tf.setText(e.type());
+			af.setText(e.address());
+			emailRows.add(row);
+			// TODO
+		}
+	}
+
+	private void prepareUiForNewContact() {
+		// We are creating new contact.
+		// No need to fill in any text boxes.
+		Toast.makeText(this, "Creating new contact", Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * Simply assigns to the object fields which are handles to UI elements.
+	 */
+	private void initializeUiElementsHandles() {
+		inflater = getLayoutInflater();
+		nameField = (TextView) findViewById(R.id.person_name_field);
+		phoneVerticalLinearLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
+		emailVerticalLinearLayout = (LinearLayout) findViewById(R.id.email_fields_layout);
+		addPhoneButton = (Button) findViewById(R.id.add_phone_button);
+		addEmailButton = (Button) findViewById(R.id.add_email_button);
+		addPhoneButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				LinearLayout row = (LinearLayout) inflater.inflate(
+						R.layout.phone_field, phoneVerticalLinearLayout);
+				row.setTag(-1);
+				// to be interpreted as a contact id; indicating a new contact
+				phoneRows.add(row);
+			}
+		});
+		addEmailButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				LinearLayout row = (LinearLayout) inflater.inflate(
+						R.layout.email_field, emailVerticalLinearLayout);
+				row.setTag(-1);
+				// to be interpreted as a contact id; indicating a new contact
+				emailRows.add(row);
+			}
+		});
+	}
+
+	private Contact getContactFromExtras(Bundle extras) {
+		Contact c;
 		if (extras != null) {
 			// we are editing an existing contact.
 			long id = extras.getLong(Contact.KEY_ID, -1);
 			// That key should always be in the extras! The -1 should never be
 			// needed!
 			try {
-				this.c = ds.get(id);
+				c = ds.get(id);
 			} catch (ContactNotFoundException e) {
 				// this should never happen
-				this.c = (new Contact.Builder("Contact not found")).build();
+				throw new RuntimeException(e);
 			}
 		} else {
 			// we are editing a new contact.
-			Log.d("EditOneContact",
+			Log.v("EditOneContact",
 					"We know that the extras passed to us are null");
-			this.c = null;
+			c = null;
 		}
-
-		inflater = getLayoutInflater();
-		nameField = (TextView) findViewById(R.id.person_name_field);
-		phoneFieldsLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
-		emailFieldsLayout = (LinearLayout) findViewById(R.id.email_fields_layout);
-		addPhoneButton = (Button) findViewById(R.id.add_phone_button);
-		addEmailButton = (Button) findViewById(R.id.add_email_button);
-
-		if (this.c == null) {
-			// We are creating new contact.
-			// No need to fill in any text boxes.
-			Toast.makeText(this, "Creating new contact", Toast.LENGTH_SHORT)
-					.show();
-		} else {
-			// We are editing an existing contact.
-			// The old information about the contact needs to be displayed.
-			Name name = this.c.getName();
-			List<Phone> phones = this.c.getPhones();
-			List<Email> emails = this.c.getEmails();
-
-			nameField.setText(name.formattedName());
-
-			for (Phone p : phones) {
-				LinearLayout row = (LinearLayout) inflater.inflate(
-						R.layout.phone_field, null);
-				row.setBackgroundColor(Color.RED);
-				row.setTag(Integer.valueOf(Long.toString(p.id())));
-				EditText tf = (EditText) row
-						.findViewById(R.id.phone_type_field);
-				EditText nf = (EditText) row
-						.findViewById(R.id.phone_number_field);
-				Log.d("EditOneContact#onCreate",
-						"type of this retrieved phone: " + p.type());
-				Log.d("EditOneContact#onCreate",
-						"number of this retrieved phone: " + p.number());
-				tf.setText(p.type());
-				nf.setText(p.number());
-				phoneFieldsLayout.addView(row);
-				phoneFields.add(row);
-			}
-			for (LinearLayout ll : phoneFields) {
-				Log.d("EditOneContact#onCreate",
-						"hashCode() of this LinearLayout: " + ll.hashCode());
-			}
-
-			for (Email e : emails) {
-				LinearLayout ll = (LinearLayout) inflater.inflate(
-						R.layout.email_field, emailFieldsLayout);
-				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
-				EditText af = (EditText) ll.findViewById(R.id.email_type_field);
-				tf.setText(e.type());
-				af.setText(e.address());
-				emailFields.add(ll);
-			}
-
-		}
-		addPhoneButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				LinearLayout ll = (LinearLayout) inflater.inflate(
-						R.layout.phone_field, phoneFieldsLayout);
-				ll.setTag(-1);
-				phoneFields.add(ll);
-			}
-		});
-
-		addEmailButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				LinearLayout ll = (LinearLayout) inflater.inflate(
-						R.layout.email_field, emailFieldsLayout);
-				emailFields.add(ll);
-			}
-		});
-		Log.d("EditOneContact#onCreate", "exitting onCreate()");
+		return c;
 	}
 
 	/**
-	 * Set up the {@link android.app.ActionBar}.
+	 * Set up the {@link android.app.ActionBar}. Show the Up button in the
+	 * action bar.
 	 */
 	private void setupActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -184,10 +202,10 @@ public class EditOneContact extends Activity {
 			// Grab the content in the UI elements,
 			// create a Contact object,
 			// then store it in the DataStore.
-			Log.d("EditOneContact#onOptionsItemSelected", "nameField==null? - "
+			Log.v("EditOneContact#onOptionsItemSelected", "nameField==null? - "
 					+ (nameField == null));
 			Name name = new Name(nameField.getText().toString());
-			Log.d("EditOneContact#onOptionsItemSelected",
+			Log.v("EditOneContact#onOptionsItemSelected",
 					"We are now trying to save this contact: ("
 							+ (this.c == null ? "null" : this.c.getId()) + ") "
 							+ name.formattedName());
@@ -201,9 +219,11 @@ public class EditOneContact extends Activity {
 			}
 			// Now we have a Contact object which has a correct id.
 
-			for (LinearLayout row : phoneFields) {
+			Log.d("EditOneContact#onOptionsItemSelected", "We can see "
+					+ phoneRows.size() + " rows of EditText here.");
+			for (LinearLayout row : phoneRows) {
 				long rowId = (Integer) row.getTag();
-				Log.d("EditOneContact#onOptionsItemSelected",
+				Log.v("EditOneContact#onOptionsItemSelected",
 						"the LinearLayout we are looking at: #"
 								+ row.hashCode() + " (" + rowId + ")");
 				EditText tf = (EditText) row
@@ -212,18 +232,18 @@ public class EditOneContact extends Activity {
 				EditText nf = (EditText) row
 						.findViewById(R.id.phone_number_field);
 				// EditText nf = (EditText) ll.getChildAt(1);
-				Log.d("EditOneContact#onOptionsItemSelected",
+				Log.v("EditOneContact#onOptionsItemSelected",
 						"The EditText we are looking at: " + tf.hashCode()
 								+ ": " + nf.hashCode());
 				String tt = tf.getText().toString();
 				String nt = nf.getText().toString();
-				Log.d("EditOneContact#onOptionsItemSelected",
+				Log.v("EditOneContact#onOptionsItemSelected",
 						"The parsed user input: " + tt + ": " + nt
-								+ "(at row no. " + rowId + ")");
+								+ " (at row no. " + rowId + ")");
 				Phone p = new Phone(rowId, tt, nt);
 				this.c.putPhone(p);
 			}
-			for (LinearLayout ll : emailFields) {
+			for (LinearLayout ll : emailRows) {
 				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
 				EditText af = (EditText) ll
 						.findViewById(R.id.email_address_field);
@@ -232,11 +252,11 @@ public class EditOneContact extends Activity {
 				this.c.putEmail(e);
 			}
 
-			Log.d("EditOneContact#onOptionsItemSelected",
+			Log.v("EditOneContact#onOptionsItemSelected",
 					"we're about to call put(). the id of the contact that is to be put: "
 							+ Long.toString(this.c.getId()));
 			long id = ds.put(c);
-			Log.d("EditOneContact#onOptionsItemSelected",
+			Log.v("EditOneContact#onOptionsItemSelected",
 					"id returned from ds#put(Contact): " + Long.toString(id));
 
 			Intent result = new Intent();
@@ -244,7 +264,7 @@ public class EditOneContact extends Activity {
 			b.putLong(Contact.KEY_ID, id);
 			result.putExtras(b);
 			setResult(RESULT_OK, result);
-			Log.d("EditOneContact#onOptionsItemSelected", "to call finish()");
+			Log.v("EditOneContact#onOptionsItemSelected", "to call finish()");
 			finish();
 			return true;
 		default:
@@ -255,7 +275,7 @@ public class EditOneContact extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		Log.d("EditOneContact#onConfigurationChanged",
+		Log.v("EditOneContact#onConfigurationChanged",
 				"entered onConfigurationChanged()");
 	}
 }
