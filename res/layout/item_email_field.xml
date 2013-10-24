@@ -9,15 +9,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.3"
-        android:hint="Home/Work/?"
+        android:hint="@string/type"
         android:inputType="textAutoCorrect" />
 
     <EditText
         android:id="@+id/email_address_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.7"
-        android:hint="address..."
-        android:inputType="number" />
+        android:layout_weight="0.6"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress" />
+
+    <ImageButton
+        android:id="@+id/email_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/action_delete"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_action_discard" />
 
 </LinearLayout>

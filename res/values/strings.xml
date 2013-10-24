@@ -8,6 +8,7 @@
     <string name="action_search_contact_list">Search</string>
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
     <string name="title_activity_new_contact">New Contact</string>
     <string name="title_activity_edit_contact">Edit Contact</string>
     <string name="title_activity_view_one_contact">View contact</string>
@@ -17,5 +18,6 @@
     <string name="phone_number_hint">Enter number here …</string>
     <string name="emails_header">Emails</string>
     <string name="email_hint">Enter address here …</string>
+    <string name="type">label</string>
 
 </resources>
