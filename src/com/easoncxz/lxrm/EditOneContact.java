@@ -80,7 +80,6 @@ public class EditOneContact extends Activity {
 		for (Phone p : phones) {
 			LinearLayout row = (LinearLayout) inflater.inflate(
 					R.layout.phone_field, null);
-			row.setBackgroundColor(Color.RED);
 			row.setTag(Integer.valueOf(Long.toString(p.id())));
 			EditText tf = (EditText) row.findViewById(R.id.phone_type_field);
 			EditText nf = (EditText) row.findViewById(R.id.phone_number_field);

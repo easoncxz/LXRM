@@ -1,5 +1,7 @@
 package com.easoncxz.lxrm;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,9 @@ import android.widget.TextView;
 
 import com.easoncxz.lxrm.exceptions.ContactNotFoundException;
 import com.easoncxz.lxrm.models.Contact;
+import com.easoncxz.lxrm.models.Email;
+import com.easoncxz.lxrm.models.Name;
+import com.easoncxz.lxrm.models.Phone;
 import com.easoncxz.lxrm.storage.DataStore;
 import com.easoncxz.lxrm.storage.DataStoreFactory;
 
@@ -23,8 +28,6 @@ public class ViewOneContact extends Activity {
 	public static final String RESULT_WANTED_TO_EDIT = "I want to edit this c";
 
 	private Contact c;
-
-	private LinearLayout phonesLayout, emailsLayout;
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -38,39 +41,64 @@ public class ViewOneContact extends Activity {
 
 		setupActionBar();
 
+		DataStore ds = DataStoreFactory.getDataStore(this);
+		LinearLayout phonesLayout = (LinearLayout) findViewById(R.id.phone_labels_layout);
+		LinearLayout emailsLayout = (LinearLayout) findViewById(R.id.email_labels_layout);
+		TextView nameField = (TextView) findViewById(R.id.person_name_label);
 		Bundle extras = getIntent().getExtras();
+		LayoutInflater inflater = getLayoutInflater();
+
+		this.c = this.createContactFromExtras(extras, ds);
+
+		this.updateNameLabel(this.c.getName(), nameField);
+		this.inflatePhoneLabels(this.c.getPhones(), phonesLayout, inflater);
+		this.inflateEmailLabels(this.c.getEmails(), emailsLayout, inflater);
+
+	}
+
+	private void inflateEmailLabels(List<Email> emails,
+			LinearLayout emailsLayout, LayoutInflater inflater) {
+
+		// TODO fill in emails
+	}
+
+	private void updateNameLabel(Name name, TextView nameLabel) {
+		nameLabel.setText(name.formattedName());
+	}
+
+	private void inflatePhoneLabels(List<Phone> phones,
+			LinearLayout phonesLayout, LayoutInflater inflater) {
+		for (Phone p : phones) {
+			LinearLayout row = (LinearLayout) inflater.inflate(
+					R.layout.phone_label, null);
+			TextView type = (TextView) row.findViewById(R.id.phone_type_label);
+			TextView number = (TextView) row
+					.findViewById(R.id.phone_number_label);
+			type.setText(p.type());
+			number.setText(p.number());
+			phonesLayout.addView(row);
+		}
+	}
+
+	private Contact createContactFromExtras(Bundle extras, DataStore ds) {
+		Contact c;
 		Log.v("ViewOneContact#onCreate",
 				"extras is null? - " + Boolean.toString(extras == null));
 		long id = extras.getLong(Contact.KEY_ID);
 		if (id != -1) {
-			DataStore ds = DataStoreFactory.getDataStore(this);
-			Log.v("ViewOneContact#onCreate", "datastore got");
+			// Log.v("ViewOneContact#onCreate", "datastore got");
 			try {
 				Log.v("ViewOneContact#onCreate",
 						"id from extras: " + Long.toString(id));
-				this.c = ds.get(id);
+				c = ds.get(id);
 			} catch (ContactNotFoundException e) {
-				Contact.Builder b = new Contact.Builder("Contact not found");
-				this.c = b.build();
+				// should never happen
+				throw new RuntimeException(e);
 			}
 		} else {
 			throw new RuntimeException("Cannot view an unsaved contact");
 		}
-
-		TextView v = (TextView) findViewById(R.id.person_name_field);
-		v.setText(this.c.getName().formattedName());
-		// TODO fill in emails & phones
-
-		phonesLayout = (LinearLayout) findViewById(R.id.phone_fields_layout);
-		emailsLayout = (LinearLayout) findViewById(R.id.email_labels_layout);
-
-		LayoutInflater inflater = getLayoutInflater();
-		View inflated = inflater.inflate(R.layout.phone_label, phonesLayout);
-		inflated = inflater.inflate(R.layout.phone_label, phonesLayout);
-		inflated = inflater.inflate(R.layout.phone_label, phonesLayout);
-		inflated = inflater.inflate(R.layout.email_label, emailsLayout);
-		inflated = inflater.inflate(R.layout.email_label, emailsLayout);
-		inflated = inflater.inflate(R.layout.email_label, emailsLayout);
+		return c;
 	}
 
 	/**
