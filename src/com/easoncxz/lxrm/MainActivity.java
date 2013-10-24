@@ -1,6 +1,9 @@
 package com.easoncxz.lxrm;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -118,10 +121,30 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		case R.id.action_sort:
-			// Toast.makeText(this, "sort list btn clicked", Toast.LENGTH_SHORT)
-			// .show();
-			this.cl.sort();
-			this.la.notifyDataSetChanged();
+			AlertDialog.Builder b = new AlertDialog.Builder(this);
+			b.setTitle(R.string.sort_this_list);
+			b.setMessage(R.string.sort_this_list_how);
+			b.setIcon(R.drawable.ic_action_sort_by_size_dark);
+			b.setCancelable(true);
+			b.setPositiveButton(android.R.string.yes,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							MainActivity.this.cl.sort();
+							MainActivity.this.la.notifyDataSetChanged();
+							Toast.makeText(MainActivity.this,
+									R.string.list_sorted, Toast.LENGTH_SHORT)
+									.show();
+						}
+					});
+			b.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+			b.create().show();
 			return true;
 		case R.id.action_settings:
 			Toast.makeText(this, "settings btn clicked", Toast.LENGTH_SHORT)

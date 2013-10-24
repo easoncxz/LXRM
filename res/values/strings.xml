@@ -19,5 +19,8 @@
     <string name="emails_header">Emails</string>
     <string name="email_hint">Enter address here …</string>
     <string name="type">label</string>
+    <string name="sort_this_list">Sort this list</string>
+    <string name="sort_this_list_how">The list will be sorted according to alphanumeric order of the first phone field of the contact. Continue?</string>
+    <string name="list_sorted">List sorted</string>
 
 </resources>
