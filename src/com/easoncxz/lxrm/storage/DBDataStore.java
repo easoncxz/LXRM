@@ -253,6 +253,19 @@ public class DBDataStore extends DataStore {
 		List<Email> oldEmails = this.getOldEmailList(contactId, db);
 		List<Email> newEmails = contact.getEmails();
 
+		{
+			Log.v("DBDataStore#diffEmails", "The oldEmails:");
+			for (Email e : oldEmails) {
+				Log.v("DBDataStore#diffPhones",
+						"\t(" + e.id() + ") " + e.type() + ": " + e.address());
+			}
+			Log.v("DBDataStore#diffEmails", "The newEmails:");
+			for (Email e : newEmails) {
+				Log.v("DBDataStore#diffPhones",
+						"\t(" + e.id() + ") " + e.type() + ": " + e.address());
+			}
+		}
+
 		// create new (if any)
 		for (Email newEmail : newEmails) {
 			if (newEmail.id() == -1) {
@@ -314,8 +327,7 @@ public class DBDataStore extends DataStore {
 				null);
 		if (c.moveToFirst()) {
 			do {
-				long emailId = c.getLong(c
-						.getColumnIndex(Helper.COLUMN_OWNER_ID));
+				long emailId = c.getLong(c.getColumnIndex(Helper.COLUMN_ID));
 				String type = c.getString(c.getColumnIndex(Helper.COLUMN_TYPE));
 				String address = c.getString(c
 						.getColumnIndex(Helper.COLUMN_EMAIL_ADDRESS));
@@ -350,6 +362,10 @@ public class DBDataStore extends DataStore {
 		cv.put(Helper.COLUMN_OWNER_ID, contactId);
 		cv.put(Helper.COLUMN_TYPE, newEmail.type());
 		cv.put(Helper.COLUMN_EMAIL_ADDRESS, newEmail.address());
+		Log.v("DBDataStore#createNewEmail", "ready to insert, for contact ("
+				+ contactId + "), this email:");
+		Log.v("DBDataStore#createNewPhone", "\t(" + newEmail.id() + ") "
+				+ newEmail.type() + ": " + newEmail.address());
 		return db.insert(Helper.TABLE_EMAILS, null, cv);
 	}
 
@@ -379,6 +395,10 @@ public class DBDataStore extends DataStore {
 
 	private long updateExistingEmail(Email newEmail, long contactId,
 			long oldEmailId, SQLiteDatabase db) {
+		Log.v("DBDataStore#updateExistingEmail",
+				"Updating email (for contact #" + Long.toString(contactId)
+						+ "):\t(" + newEmail.id() + ") " + newEmail.type()
+						+ ": " + newEmail.address());
 		ContentValues cv = new ContentValues();
 		cv.put(Helper.COLUMN_ID, oldEmailId);
 		cv.put(Helper.COLUMN_OWNER_ID, contactId);
@@ -402,9 +422,11 @@ public class DBDataStore extends DataStore {
 				new String[] { Long.toString(phoneId) });
 	}
 
-	private int deleteExistingEmail(long oldId, SQLiteDatabase db) {
+	private int deleteExistingEmail(long emailId, SQLiteDatabase db) {
+		Log.v("DBDataStore#deleteExistingEmail",
+				"Deleting phone #" + Long.toString(emailId));
 		return db.delete(Helper.TABLE_EMAILS, Helper.COLUMN_ID + " == ?",
-				new String[] { Long.toString(oldId) });
+				new String[] { Long.toString(emailId) });
 	}
 
 	@Override
@@ -425,7 +447,7 @@ public class DBDataStore extends DataStore {
 		} else {
 			// We know that: cursor.getCount() == 1
 			int index = cursor.getColumnIndex(Helper.COLUMN_PERSON_NAME);
-			cursor.moveToFirst();
+			cursor.moveToFirst(); // lacks an "if" here
 			String name = cursor.getString(index);
 			Log.v("DBDataStore#get", "name retrieved: " + name);
 			contact = this.buildContact(name, id, db);
@@ -447,6 +469,9 @@ public class DBDataStore extends DataStore {
 	 * @return
 	 */
 	private Contact buildContact(String name, long id, SQLiteDatabase db) {
+		Contact.Builder builder = new Contact.Builder(name);
+		builder.id(id);
+
 		List<Phone> phones = this.getOldPhoneList(id, db);
 		{
 			// scaffolding
@@ -458,16 +483,26 @@ public class DBDataStore extends DataStore {
 						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
 			}
 		}
-		Contact.Builder builder = new Contact.Builder(name);
 		builder.addPhones(phones);
-		builder.id(id);
+
+		List<Email> emails = this.getOldEmailList(id, db);
+		{
+			// scaffolding
+			Log.v("DBDataStore#buildContact",
+					"old email list has: " + emails.size()
+							+ " entries as follows: ");
+			for (Email e : emails) {
+				Log.v("DBDataStore#buildContact",
+						"\t(" + e.id() + ") " + e.type() + ": " + e.address());
+			}
+		}
+		builder.addEmails(emails);
+
 		Contact contact = builder.build();
 		Log.v("DBDataStore#buildContact",
 				"the Contact we have just built has: "
 						+ contact.getPhones().size() + " phones");
-		for (Email e : this.getOldEmailList(contact.getId(), db)) {
-			contact.putEmail(e);
-		}
+
 		return contact;
 	}
 
@@ -475,11 +510,9 @@ public class DBDataStore extends DataStore {
 	public ContactList getAll() {
 		Log.v("DBDataStore#getAll", "entered getAll()");
 		SQLiteDatabase db = h.getReadableDatabase();
-		Log.v("DBDataStore#getAll", "db got");
 		Cursor cursor = db.query(Helper.TABLE_CONTACTS, new String[] {
 				Helper.COLUMN_ID, Helper.COLUMN_PERSON_NAME }, null, null,
 				null, null, null);
-		Log.v("DBDataStore#getAll", "query successful");
 		ContactList cl = new ContactList();
 		if (cursor.moveToFirst()) {
 			do {
