@@ -99,11 +99,13 @@ public class EditOneContact extends Activity {
 			nameField.setText(name.formattedName());
 
 			for (Phone p : phones) {
-				LinearLayout ll = (LinearLayout) inflater.inflate(
+				LinearLayout row = (LinearLayout) inflater.inflate(
 						R.layout.phone_field, null);
-				ll.setBackgroundColor(Color.RED);
-				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
-				EditText nf = (EditText) ll
+				row.setBackgroundColor(Color.RED);
+				row.setTag(Integer.valueOf(Long.toString(p.id())));
+				EditText tf = (EditText) row
+						.findViewById(R.id.phone_type_field);
+				EditText nf = (EditText) row
 						.findViewById(R.id.phone_number_field);
 				Log.d("EditOneContact#onCreate",
 						"type of this retrieved phone: " + p.type());
@@ -111,8 +113,8 @@ public class EditOneContact extends Activity {
 						"number of this retrieved phone: " + p.number());
 				tf.setText(p.type());
 				nf.setText(p.number());
-				phoneFieldsLayout.addView(ll);
-				phoneFields.add(ll);
+				phoneFieldsLayout.addView(row);
+				phoneFields.add(row);
 			}
 			for (LinearLayout ll : phoneFields) {
 				Log.d("EditOneContact#onCreate",
@@ -135,6 +137,7 @@ public class EditOneContact extends Activity {
 			public void onClick(View v) {
 				LinearLayout ll = (LinearLayout) inflater.inflate(
 						R.layout.phone_field, phoneFieldsLayout);
+				ll.setTag(-1);
 				phoneFields.add(ll);
 			}
 		});
@@ -198,23 +201,26 @@ public class EditOneContact extends Activity {
 			}
 			// Now we have a Contact object which has a correct id.
 
-			for (LinearLayout ll : phoneFields) {
+			for (LinearLayout row : phoneFields) {
+				long rowId = (Integer) row.getTag();
 				Log.d("EditOneContact#onOptionsItemSelected",
-						"the LinearLayout we are looking at: " + ll.hashCode());
-				// EditText tf = (EditText)
-				// ll.findViewById(R.id.phone_type_field);
-				EditText tf = (EditText) ll.getChildAt(0);
-				// EditText nf = (EditText) ll
-				// .findViewById(R.id.phone_number_field);
-				EditText nf = (EditText) ll.getChildAt(1);
+						"the LinearLayout we are looking at: #"
+								+ row.hashCode() + " (" + rowId + ")");
+				EditText tf = (EditText) row
+						.findViewById(R.id.phone_type_field);
+				// EditText tf = (EditText) ll.getChildAt(0);
+				EditText nf = (EditText) row
+						.findViewById(R.id.phone_number_field);
+				// EditText nf = (EditText) ll.getChildAt(1);
 				Log.d("EditOneContact#onOptionsItemSelected",
 						"The EditText we are looking at: " + tf.hashCode()
 								+ ": " + nf.hashCode());
 				String tt = tf.getText().toString();
 				String nt = nf.getText().toString();
 				Log.d("EditOneContact#onOptionsItemSelected",
-						"The parsed user input: " + tt + ": " + nt);
-				Phone p = new Phone(-1, tt, nt);
+						"The parsed user input: " + tt + ": " + nt
+								+ "(at row no. " + rowId + ")");
+				Phone p = new Phone(rowId, tt, nt);
 				this.c.putPhone(p);
 			}
 			for (LinearLayout ll : emailFields) {

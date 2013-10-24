@@ -205,9 +205,22 @@ public class DBDataStore extends DataStore {
 	 * @param contactId
 	 */
 	private void diffPhones(Contact contact, SQLiteDatabase db) {
-		long contactId = contact.getId();
-		List<Phone> oldPhones = this.getOldPhoneList(contactId, db);
-		List<Phone> newPhones = contact.getPhones();
+		final long contactId = contact.getId();
+		final List<Phone> oldPhones = this.getOldPhoneList(contactId, db);
+		final List<Phone> newPhones = contact.getPhones();
+
+		{
+			Log.d("DBDataStore#diffPhones", "The oldPhones:");
+			for (Phone p : oldPhones) {
+				Log.d("DBDataStore#diffPhones",
+						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
+			}
+			Log.d("DBDataStore#diffPhones", "The newPhones:");
+			for (Phone p : newPhones) {
+				Log.d("DBDataStore#diffPhones",
+						"\t(" + p.id() + ") " + p.type() + ": " + p.number());
+			}
+		}
 
 		// create new (if any)
 		for (Phone newPhone : newPhones) {
@@ -218,17 +231,18 @@ public class DBDataStore extends DataStore {
 
 		// update and delete (if any)
 		for (Phone oldPhone : oldPhones) {
+			long oldPhoneId = oldPhone.id();
 			boolean thisPhoneShouldBeDeleted = true;
 			for (Phone newPhone : newPhones) {
-				if (newPhone.id() == oldPhone.id()) {
-					this.updateExistingPhone(newPhone, contactId,
-							oldPhone.id(), db);
+				long newPhoneId = newPhone.id();
+				if (newPhoneId == oldPhoneId) {
+					this.updateExistingPhone(newPhone, contactId, db);
 					thisPhoneShouldBeDeleted = false;
 					break;
 				}
 			}
 			if (thisPhoneShouldBeDeleted) {
-				this.deleteExistingPhone(oldPhone.id(), db);
+				this.deleteExistingPhone(oldPhoneId, db);
 			}
 		}
 
@@ -348,14 +362,19 @@ public class DBDataStore extends DataStore {
 	 * @return
 	 */
 	private int updateExistingPhone(Phone newPhone, long contactId,
-			long oldPhoneId, SQLiteDatabase db) {
+			SQLiteDatabase db) {
+		Log.d("DBDataStore#updateExistingPhone",
+				"Updating phone (for contact #" + Long.toString(contactId)
+						+ "):\n\t(" + newPhone.id() + ") " + newPhone.type()
+						+ ": " + newPhone.number());
+		long phoneId = newPhone.id();
 		ContentValues cv = new ContentValues();
-		cv.put(Helper.COLUMN_ID, oldPhoneId);
+		cv.put(Helper.COLUMN_ID, phoneId);
 		cv.put(Helper.COLUMN_OWNER_ID, contactId);
 		cv.put(Helper.COLUMN_TYPE, newPhone.type());
 		cv.put(Helper.COLUMN_PHONE_NUMBER, newPhone.number());
 		return db.update(Helper.TABLE_PHONES, cv, Helper.COLUMN_ID + " == ?",
-				new String[] { Long.toString(oldPhoneId) });
+				new String[] { Long.toString(phoneId) });
 	}
 
 	private long updateExistingEmail(Email newEmail, long contactId,
@@ -376,9 +395,11 @@ public class DBDataStore extends DataStore {
 	 * @param oldPhone
 	 * @return
 	 */
-	private int deleteExistingPhone(long oldId, SQLiteDatabase db) {
+	private int deleteExistingPhone(long phoneId, SQLiteDatabase db) {
+		Log.d("DBDataStore#deleteExistingPhone",
+				"Deleting phone #" + Long.toString(phoneId));
 		return db.delete(Helper.TABLE_PHONES, Helper.COLUMN_ID + " == ?",
-				new String[] { Long.toString(oldId) });
+				new String[] { Long.toString(phoneId) });
 	}
 
 	private int deleteExistingEmail(long oldId, SQLiteDatabase db) {
