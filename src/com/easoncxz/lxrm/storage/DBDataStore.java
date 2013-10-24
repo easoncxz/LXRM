@@ -531,7 +531,13 @@ public class DBDataStore extends DataStore {
 
 	@Override
 	public boolean delete(long id) throws ContactNotFoundException {
-		// TODO Auto-generated method stub
-		return false;
+		SQLiteDatabase db = h.getWritableDatabase();
+		db.delete(Helper.TABLE_CONTACTS, Helper.COLUMN_ID + " == ? ",
+				new String[] { Long.toString(id) });
+		db.delete(Helper.TABLE_PHONES, Helper.COLUMN_OWNER_ID + " == ?",
+				new String[] { Long.toString(id) });
+		db.delete(Helper.TABLE_EMAILS, Helper.COLUMN_OWNER_ID + " == ?",
+				new String[] { Long.toString(id) });
+		return true;
 	}
 }

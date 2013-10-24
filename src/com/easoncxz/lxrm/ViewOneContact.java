@@ -28,6 +28,7 @@ public class ViewOneContact extends Activity {
 	public static final String RESULT_WANTED_TO_EDIT = "I want to edit this c";
 
 	private Contact c;
+	private DataStore ds;
 
 	/**
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -41,7 +42,7 @@ public class ViewOneContact extends Activity {
 
 		setupActionBar();
 
-		DataStore ds = DataStoreFactory.getDataStore(this);
+		ds = DataStoreFactory.getDataStore(this);
 		LinearLayout phonesLayout = (LinearLayout) findViewById(R.id.phone_labels_layout);
 		LinearLayout emailsLayout = (LinearLayout) findViewById(R.id.email_labels_layout);
 		TextView nameField = (TextView) findViewById(R.id.person_name_label);
@@ -151,10 +152,20 @@ public class ViewOneContact extends Activity {
 					"Trying to call setResult(int, Intent).");
 			setResult(RESULT_OK, result);
 			finish();
-
 			return true;
+		case R.id.action_delete:
+			if (this.c != null) {
+				try {
+					ds.delete(this.c.getId());
+				} catch (ContactNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 
 }
