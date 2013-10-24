@@ -46,12 +46,6 @@ public class EditOneContact extends Activity {
 	private List<LinearLayout> phoneFields = new ArrayList<LinearLayout>();
 	private List<LinearLayout> emailFields = new ArrayList<LinearLayout>();
 
-	// data model objects
-	private Name name;
-	private List<Phone> phones;
-	private List<Email> emails;
-
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,9 +91,9 @@ public class EditOneContact extends Activity {
 		} else {
 			// We are editing an existing contact.
 			// The old information about the contact needs to be displayed.
-			name = this.c.getName();
-			phones = this.c.getPhones();
-			emails = this.c.getEmails();
+			Name name = this.c.getName();
+			List<Phone> phones = this.c.getPhones();
+			List<Email> emails = this.c.getEmails();
 
 			nameField.setText(name.formattedName());
 			for (Phone p : phones) {
@@ -124,17 +118,19 @@ public class EditOneContact extends Activity {
 			addPhoneButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					inflater.inflate(R.layout.phone_field, phoneFieldsLayout);
+					LinearLayout ll = (LinearLayout) inflater.inflate(
+							R.layout.phone_field, phoneFieldsLayout);
+					phoneFields.add(ll);
 				}
 			});
 			addEmailButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					inflater.inflate(R.layout.email_field, emailFieldsLayout);
+					LinearLayout ll = (LinearLayout) inflater.inflate(
+							R.layout.email_field, emailFieldsLayout);
+					emailFields.add(ll);
 				}
 			});
-
-			// TODO emails & phones too.
 		}
 	}
 
@@ -166,29 +162,45 @@ public class EditOneContact extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.action_save:
-			Contact c;
-			if (this.c != null) {
-				c = this.c;
-				Name name = new Name(
-						((TextView) findViewById(R.id.person_name_field))
-								.getText().toString());
-				c.putName(name);
+			// Grab the content in the UI elements,
+			// create a Contact object,
+			// then store it in the DataStore.
+			Name name = new Name(nameField.getText().toString());
+			if (this.c == null) {
+				// We should save a new contact.
+				this.c = (new Contact.Builder(name.formattedName())).build();
+
 			} else {
-				c = (new Contact.Builder(
-						((TextView) findViewById(R.id.person_name_field))
-								.getText().toString())).build();
+				// We should update an existing contact.
+				this.c.putName(name);
 			}
-			// TODO create the contact object properly: include multiple Phones,
-			// Emails
+			// Now we have a Contact object which has a correct id.
+
+			for (LinearLayout ll : phoneFields) {
+				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
+				EditText nf = (EditText) ll
+						.findViewById(R.id.phone_number_field);
+				Phone p = new Phone(-1, tf.toString(), nf.toString());
+				this.c.putPhone(p);
+			}
+			for (LinearLayout ll : emailFields) {
+				EditText tf = (EditText) ll.findViewById(R.id.email_type_field);
+				EditText af = (EditText) ll
+						.findViewById(R.id.email_address_field);
+				Email e = new Email(-1, tf.toString(), af.toString());
+				this.c.putEmail(e);
+			}
 
 			long id = ds.put(c);
-			// id == c.getId() != -1 ? c.getId() : the_new_id_from_the_ds
+			Log.d("EditOneContact#onOptionsItemSelected",
+					"id returned from ds#put(Contact): " + Long.toString(id));
 
 			Intent result = new Intent();
 			Bundle b = new Bundle();
 			b.putLong(Contact.KEY_ID, id);
 			result.putExtras(b);
 			setResult(RESULT_OK, result);
+			Log.d("EditOneContact#onOptionsItemSelected", "to call finish()");
 			finish();
 			return true;
 		default:
