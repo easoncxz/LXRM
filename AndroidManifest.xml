@@ -27,6 +27,7 @@
         </activity>
         <activity
             android:name="com.easoncxz.lxrm.EditOneContact"
+            android:configChanges="orientation"
             android:label="@string/title_activity_new_contact"
             android:parentActivityName="MainActivity" >
             <meta-data
