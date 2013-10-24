@@ -102,6 +102,10 @@ public class EditOneContact extends Activity {
 				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
 				EditText nf = (EditText) ll
 						.findViewById(R.id.phone_number_field);
+				Log.d("EditOneContact#onCreate",
+						"type of this retrieved phone: " + p.type());
+				Log.d("EditOneContact#onCreate",
+						"number of this retrieved phone: " + p.number());
 				tf.setText(p.type());
 				nf.setText(p.number());
 				phoneFields.add(ll);
@@ -166,6 +170,9 @@ public class EditOneContact extends Activity {
 			// create a Contact object,
 			// then store it in the DataStore.
 			Name name = new Name(nameField.getText().toString());
+			Log.d("EditOneContact#onOptionsItemSelected",
+					"We are now trying to save this contact: ("
+							+ this.c.getId() + ") " + name.formattedName());
 			if (this.c == null) {
 				// We should save a new contact.
 				this.c = (new Contact.Builder(name.formattedName())).build();
@@ -180,8 +187,13 @@ public class EditOneContact extends Activity {
 				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
 				EditText nf = (EditText) ll
 						.findViewById(R.id.phone_number_field);
-				Phone p = new Phone(-1, tf.getText().toString(), nf.getText()
-						.toString());
+				Log.d("EditOneContact#onOptionsItemSelected",
+						"The EditText we are looking at: " + tf + ": " + nf);
+				String tt = tf.getText().toString();
+				String nt = nf.getText().toString();
+				Log.d("EditOneContact#onOptionsItemSelected",
+						"The parsed user input: " + tt + ": " + nt);
+				Phone p = new Phone(-1, tt, nt);
 				this.c.putPhone(p);
 			}
 			for (LinearLayout ll : emailFields) {

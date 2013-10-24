@@ -100,11 +100,10 @@ public class DBDataStore extends DataStore {
 	 */
 	@Override
 	public long put(Contact contact) {
-		Log.d("DBDataStore#put",
-				"this is DBDataStore#put, which adds a phone to your contact");
+		Log.d("DBDataStore#put", "this is DBDataStore#put");
 		SQLiteDatabase db = h.getWritableDatabase();
 
-		contact.putPhone(new Phone(-1, "DBDataStore", "111"));
+		// contact.putPhone(new Phone(-1, "DBDataStore", "111"));
 
 		long contactId = contact.getId();
 		Log.d("DBDataStore#put",
@@ -175,7 +174,7 @@ public class DBDataStore extends DataStore {
 		// We are editing an existing contact.
 		// However, it is still possible that new Phone/Email entries are
 		// created.
-		Log.d("Contact#updateExistingContact",
+		Log.d("DBDataStore#updateExistingContact",
 				"entered updateExistingContact()");
 		long contactId = contact.getId();
 		{
@@ -186,7 +185,7 @@ public class DBDataStore extends DataStore {
 			// later.
 			Log.d("Contact#updateExistingContact",
 					"ready to update contact with id: " + contactId
-							+ " and name: " + name);
+							+ " and name: " + name.formattedName());
 			db.update(Helper.TABLE_CONTACTS, cv, Helper.COLUMN_ID + " == ?",
 					new String[] { Long.toString(contactId) });
 		}
