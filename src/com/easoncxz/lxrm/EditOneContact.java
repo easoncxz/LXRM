@@ -101,6 +101,7 @@ public class EditOneContact extends Activity {
 			for (Phone p : phones) {
 				LinearLayout ll = (LinearLayout) inflater.inflate(
 						R.layout.phone_field, null);
+				ll.setBackgroundColor(Color.RED);
 				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
 				EditText nf = (EditText) ll
 						.findViewById(R.id.phone_number_field);
@@ -110,7 +111,12 @@ public class EditOneContact extends Activity {
 						"number of this retrieved phone: " + p.number());
 				tf.setText(p.type());
 				nf.setText(p.number());
+				phoneFieldsLayout.addView(ll);
 				phoneFields.add(ll);
+			}
+			for (LinearLayout ll : phoneFields) {
+				Log.d("EditOneContact#onCreate",
+						"hashCode() of this LinearLayout: " + ll.hashCode());
 			}
 
 			for (Email e : emails) {
@@ -123,24 +129,24 @@ public class EditOneContact extends Activity {
 				emailFields.add(ll);
 			}
 
-			addPhoneButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					LinearLayout ll = (LinearLayout) inflater.inflate(
-							R.layout.phone_field, phoneFieldsLayout);
-					phoneFields.add(ll);
-				}
-			});
-
-			addEmailButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					LinearLayout ll = (LinearLayout) inflater.inflate(
-							R.layout.email_field, emailFieldsLayout);
-					emailFields.add(ll);
-				}
-			});
 		}
+		addPhoneButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				LinearLayout ll = (LinearLayout) inflater.inflate(
+						R.layout.phone_field, phoneFieldsLayout);
+				phoneFields.add(ll);
+			}
+		});
+
+		addEmailButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				LinearLayout ll = (LinearLayout) inflater.inflate(
+						R.layout.email_field, emailFieldsLayout);
+				emailFields.add(ll);
+			}
+		});
 		Log.d("EditOneContact#onCreate", "exitting onCreate()");
 	}
 
@@ -193,9 +199,14 @@ public class EditOneContact extends Activity {
 			// Now we have a Contact object which has a correct id.
 
 			for (LinearLayout ll : phoneFields) {
-				EditText tf = (EditText) ll.findViewById(R.id.phone_type_field);
-				EditText nf = (EditText) ll
-						.findViewById(R.id.phone_number_field);
+				Log.d("EditOneContact#onOptionsItemSelected",
+						"the LinearLayout we are looking at: " + ll.hashCode());
+				// EditText tf = (EditText)
+				// ll.findViewById(R.id.phone_type_field);
+				EditText tf = (EditText) ll.getChildAt(0);
+				// EditText nf = (EditText) ll
+				// .findViewById(R.id.phone_number_field);
+				EditText nf = (EditText) ll.getChildAt(1);
 				Log.d("EditOneContact#onOptionsItemSelected",
 						"The EditText we are looking at: " + tf.hashCode()
 								+ ": " + nf.hashCode());

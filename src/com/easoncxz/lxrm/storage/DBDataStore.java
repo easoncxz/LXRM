@@ -280,8 +280,7 @@ public class DBDataStore extends DataStore {
 				null);
 		if (c.moveToFirst()) {
 			do {
-				long phoneId = c.getLong(c
-						.getColumnIndex(Helper.COLUMN_OWNER_ID));
+				long phoneId = c.getLong(c.getColumnIndex(Helper.COLUMN_ID));
 				String type = c.getString(c.getColumnIndex(Helper.COLUMN_TYPE));
 				String number = c.getString(c
 						.getColumnIndex(Helper.COLUMN_PHONE_NUMBER));
@@ -422,6 +421,7 @@ public class DBDataStore extends DataStore {
 	 * 
 	 * @param name
 	 * @param id
+	 *            the contactId
 	 * @param db
 	 * @return
 	 */
